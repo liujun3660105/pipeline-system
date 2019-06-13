@@ -147,11 +147,9 @@
               this.measureTooltipElement.innerHTML=this.measureMsg;
               this.measureTooltipOverlay.setPosition(tooltipCoord);
 
-            })
+            });
 
             this.vectorSource.clear();
-
-
           });
           this.draw.on('drawend',(evt)=>{
             this.measureTooltipElement.className = 'tooltip tooltip-static';

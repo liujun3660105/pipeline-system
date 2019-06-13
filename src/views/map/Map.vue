@@ -3,9 +3,9 @@
       <Tools @tileLayerIndexChange="receiveTileLayerIndex">
 
       </Tools>
-
       <Legend></Legend>
-
+      <SpatialFilter></SpatialFilter>
+      <ShowFeatureInfo></ShowFeatureInfo>
     </div>
 
 </template>
@@ -13,24 +13,31 @@
 <script>
   import 'ol/ol.css'
   import {Map, View} from 'ol'
-
-
   import LayerGroup from 'ol/layer/Group';
   import TileLayer from 'ol/layer/Tile'
+  import ImageLayer from 'ol/layer/Image'
   import XYZ from 'ol/source/XYZ'
   // import TileLayer from 'ol/layer/Tile'
   // import XYZ from 'ol/source/XYZ'
   import OSM from 'ol/source/OSM.js'
   import {defaults} from 'ol/control/util'
+  import Vector from 'ol/source/Vector'
   import VectorLayer from 'ol/layer/Vector'
   import GeoJSON from 'ol/format/GeoJSON'
   import TileWMS from 'ol/source/TileWMS'
-  import Vector from 'ol/source/Vector'
+  import ImageWMS from 'ol/source/ImageWMS'
+  import GeometryCollection from 'ol/geom/GeometryCollection';
+  import Point from 'ol/geom/Point'
+  import LineString from 'ol/geom/LineString'
+  import MultiLineString from 'ol/geom/MultiLineString'
+  import Feature from 'ol/Feature'
+  import Collection from 'ol/Collection'
   import Cluster from 'ol/source/Cluster'
   import VectorTileLayer from 'ol/layer/VectorTile'
   import VectorTileSource from 'ol/source/VectorTile'
   import TileDebug from 'ol/source/TileDebug'
   import TileGrid from 'ol/tilegrid/TileGrid'
+  import Draw from 'ol/interaction/Draw.js';
   import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style.js';
   import Tools from './tools'
   import {transform} from 'ol/proj'
@@ -40,6 +47,9 @@
   import {createStringXY} from 'ol/coordinate.js';
   import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction.js';
   import Legend from '@/components/map/Legend'
+  import SpatialFilter from '@/views/moudle/search/spatialFilter'
+  import ShowFeatureInfo from '@/views/moudle/search/ShowFeatureInfo'
+
     export default {
       name: "Map",
       provide() {
@@ -52,43 +62,141 @@
           map: null,
           view: null,
           xyzIndex: 0,
-          prospectWMSLayer: null,
-          pcWMSLayer: null,
           themeLayers: [
             {
-              value: 'pc',
-              layer: null
+              value:'xm',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  params: {
+                    tiled: true,
+                    "LAYERS": 'pipeline:xmline'
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
             },
             {
-              value: 'wt',
-              layer: null
+              value:'wt',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  params: {
+                    // 'FORMAT': 'jpg',
+                    // 'VERSION': '1.1.1',
+                    tiled: true,
+                    "LAYERS": 'pipeline:prospectData',
+                    // "exceptions": 'application/vnd.ogc.se_inimage'
+                    // tilesOrigin: 93615.0703125 + "," + 236681.1875,
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'pc',
+              layer:new ImageLayer({
+                source:new ImageWMS({
+                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  params: {
+                    'FORMAT': 'image/png',
+                    // 'VERSION': '1.1.1',
+                    "LAYERS": 'pipeline:puchaData',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                    'CQL_FILTER':"ly='普查'"
+                    // tilesOrigin: 93615.0703125 + "," + 236681.1875,
+                    //'CQL_FILTER': "projectid='" + projectid + "'"
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'dh',
+              layer:new ImageLayer({
+                source:new ImageWMS({
+                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  params: {
+                    'FORMAT': 'image/png',
+                    // 'VERSION': '1.1.1',
+                    "LAYERS": 'pipeline:puchaData',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                    'CQL_FILTER':"ly='示意'"
+                    // tilesOrigin: 93615.0703125 + "," + 236681.1875,
+                    //'CQL_FILTER': "projectid='" + projectid + "'"
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'sy',
+              layer:new ImageLayer({
+                source:new ImageWMS({
+                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  params: {
+                    'FORMAT': 'image/png',
+                    // 'VERSION': '1.1.1',
+                    "LAYERS": 'pipeline:puchaData',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                    'CQL_FILTER':"ly='调绘'"
+                    // tilesOrigin: 93615.0703125 + "," + 236681.1875,
+                    //'CQL_FILTER': "projectid='" + projectid + "'"
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
             }
-          ]
 
+
+          ],
+          selectedVectorLayer:null,
+          selectedVectorSource:null,
+          selectedFeatures:[]
         }
 
       },
       computed: {
+        //得到layer传过来的图层
         getSelectedLayers() {
-          // let newLayers=[];
-          // let layers=this.$store.state.layers;
-          // // this.map.addLayer(layers[0]);
-          // //过滤那些空的图层
-          // layers.forEach(layer=>{
-          //   if(layer){
-          //     newLayers.push(layer);
-          //   }
+          return this.$store.state.layer.layers;
+         },
+        // getKeyWord(){
+        //   return this.$store.state.search.searchParams;
+        // },
+        //从vuex中获取features
+        getSelectedFeatures(){
+          return this.$store.state.search.features
+          //从后端传来的数据成果有两种形式，一种是geojson数据，一种是json数据，对应后台的sql语句
+          //注释部分为json部分，但是feature和properities是分离的，对于后期不好实现点击查看要素信息,所以利用的是geojson数据
+          // let selectedGeoms=[];
+          // selectedFeatures.forEach((feature,index)=>{
+          //   console.log(JSON.parse(feature.geom));
+          //   selectedGeoms.push(JSON.parse(feature.geom).coordinates);
           // });
-          // console.log(newLayers,'computed计算结果');
-          // return newLayers;
-          return this.$store.state.layers;
-        }
-
+        },
+        getDbClickRowXmId(){
+          return this.$store.state.search.DbClickRowXmId;
+        },
+        // getDrawGeometry(){
+        //   return this.$store.state.search.geometry
+        // }
       },
       components: {
         Tools,
-        Legend
-
+        Legend,
+        SpatialFilter,
+        ShowFeatureInfo
       },
       mounted() {
         this.initMap();
@@ -97,49 +205,8 @@
       },
       methods: {
         initMap() {
-          //物探数据WMS图层
-          this.prospectWMSLayer = new TileLayer({
-            source: new TileWMS({
-              url: 'http://localhost:8080/geoserver/pipeline/wms',
-              params: {
-                // 'FORMAT': 'jpg',
-                // 'VERSION': '1.1.1',
-                tiled: true,
-                "LAYERS": 'pipeline:puchaData',
-                // "exceptions": 'application/vnd.ogc.se_inimage'
-                // tilesOrigin: 93615.0703125 + "," + 236681.1875,
-              },
-              projection: 'EPSG:4326'
-            }),
-            zIndex: 2,
-            visible: false
-          });
-          //普查图层
-          this.pcWMSLayer = new TileLayer({
-            source: new TileWMS({
-              url: 'http://localhost:8080/geoserver/pipeline/wms',
-              params: {
-                // 'FORMAT': 'jpg',
-                // 'VERSION': '1.1.1',
-                tiled: true,
-                "LAYERS": 'pipeline:prospectData',
-                // "exceptions": 'application/vnd.ogc.se_inimage'
-                // tilesOrigin: 93615.0703125 + "," + 236681.1875,
-              },
-              projection: 'EPSG:4326'
-            }),
-            zIndex: 2,
-            visible: false
-          });
-          this.themeLayers[0].layer = this.prospectWMSLayer;
-          this.themeLayers[1].layer = this.pcWMSLayer;
-
-
-
           var projectionExtent = [-180, -90, 180, 90];//坐标系范围
           var extent = [117, 38.5, 118, 39.5];//显示范围
-
-
           //切片编号调试图层
           // var tileDebugLayer=new TileLayer({
           //   source:new TileDebug({
@@ -149,8 +216,6 @@
           //   }),
           //   zIndex:4
           // });//测试瓦片
-
-
           //设置视图
           this.view = new View({
             zoom: 12,
@@ -166,7 +231,6 @@
             projection: 'EPSG:4326'
             // className: 'custom-mouse-position'
           });
-
           //设置map
           this.map = new Map({
             target: 'map',
@@ -174,72 +238,149 @@
             interactions: defaultInteractions().extend([
               new DragRotateAndZoom()
             ]),
-            // layers:[
-            //   new TileLayer({
-            //     source: new XYZ({
-            //       // url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            //       url:'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}'
-            //     })
-            //   })
-            // ],
             view: this.view
           });
-          this.map.addLayer(this.prospectWMSLayer);
-          this.map.addLayer(this.pcWMSLayer);
+          this.addLayersToMap();
 
-          // this.map.addLayer(this.prospectWMSLayer);
+          //设置筛选出的要素相关图层和源
+          this.selectedVectorSource=new Vector();
+          this.selectedVectorLayer=new VectorLayer({
+            source:this.selectedVectorSource,
+            // new Vector({
+            // features:features
+            //这里features是数组
+            // features:[new Feature({
+            //   geometry:new MultiLineString(this.getSelectedFeatures)
+            // })]
+            // features:new Collection({
+            //   array:new MultiLineString(this.getSelectedFeatures)
+            // })
+            // }),
+            style:new Style({
+              fill: new Fill({
+                color: 'rgba(255, 255, 255, 0.2)'
+              }),
+              stroke: new Stroke({
+                color: 'rgba(0, 0, 0, 0.5)',
+                lineDash: [10, 10],
+                width: 5
+              }),
+              image: new CircleStyle({
+                radius: 5,
+                stroke: new Stroke({
+                  color: 'rgba(0, 0, 0, 0.7)'
+                }),
+                fill: new Fill({
+                  color: 'rgba(255, 255, 255, 0.2)'
+                })
+              })
+            }),
+            zIndex:3
+          });
+          this.map.addLayer(this.selectedVectorLayer);
 
-          // this.themeLayers.forEach(layer=>{
-          //   if(layer){
-          //     this.map.addLayer(layer)
-          //   }
-          //
-          // })
-          // this.map.addLayers(this.thhemeLayers);
         },
-
+        //将data中初始化的图层依次添加到地图中
+        addLayersToMap(){
+          this.themeLayers.forEach((layerObject,index)=>{
+            if(layerObject){
+              this.map.addLayer(layerObject.layer);
+            }
+          })
+        },
         //接收从Tools传来的底图index
         receiveTileLayerIndex(index) {
           this.xyzIndex = index;
         }
-
       },
       watch: {
+        //当layer组件中的显示图层发生变化，对themeLayers的图层进行visible设置
         getSelectedLayers(newLayerList, oldLayerList) {
         let indexList=[];
           newLayerList.forEach((layer) => {
-            let index = this.themeLayers.findIndex((themeLayer) => {
-              return themeLayer.value === layer.value;
-            });
-            indexList.push(index);
-            this.themeLayers[index].layer.setVisible(true);
-            //   let index=this.themeLayers.indexOf(layer);//当前layer在themeLayers中的索引值
-            //   if(index!==-1){ //layer在themeLayers中已经存在
-            //     layer.setVisible(true);
-            //     //把不在themeLayers中的图层关掉
-            //   }
-            //   else{
-            //     //如果之前不存在 map就把这个新图层加载进来
-            //
-            //     this.themeLayers.push(layer);
-            //     // this.map.addLayer(this.prospectWMSLayer);
-            //     // this.map.removeLayer(layer);
-            //   }
-            // });
-            //把themeLayers中，不在选中的图层中的图层的隐藏
-            //newLayerList.indexOf(v)<0
-
-
-
+            if(layer){
+              let index = this.themeLayers.findIndex((themeLayer) => {
+                return themeLayer.value === layer.value;
+              });
+              indexList.push(index);
+              this.themeLayers[index].layer.setVisible(true);
+            }
           });
+
+          //在themeLayer中找到不属于Layer组件传过来的图层，设置成false
           let differentLayers=this.themeLayers.filter((v,i,arr)=> {return indexList.indexOf(i)<0});
-          console.log(differentLayers);
           if(differentLayers.length>0){
             differentLayers.forEach((v)=>{
               v.layer.setVisible(false)
             })
           }
+        },
+        //对搜索的关键字和搜索类型进行监听，点击Search组件搜索按钮后，vuex中search模块的数据发生改变
+        //异步获取xmline表的要素数据，更改vuex中search模块的features
+        getSelectedFeatures(newFeatureList){
+          this.selectedVectorSource.clear();
+          if(newFeatureList.features){//如果查询的结果不为空，则进行要素显示和定位
+            let selectedFeatures=new GeoJSON().readFeatures(newFeatureList);
+            this.selectedVectorSource.addFeatures(selectedFeatures);
+            this.map.getView().fit(this.selectedVectorSource.getExtent());
+          }
+        },
+
+        //双击表格某一行，得到这一行数据的项目编号
+        getDbClickRowXmId(newXmId){
+          this.selectedFeatures.forEach(feature=>{
+            feature.setStyle(null);
+          });
+          this.selectedFeatures=this.selectedVectorSource.getFeatures().filter(feature=>{
+            return feature.getProperties().xmbm===newXmId
+          });
+          let style=new Style({
+            stroke: new Stroke({
+              color: 'rgba(220, 20, 60, 0.9)',
+              lineDash: [10, 10],
+              width: 5
+            }),
+          });
+          let geometries=[];
+          this.selectedFeatures.forEach(feature=>{
+            geometries.push(feature.getGeometry());
+            feature.setStyle(style);
+          });
+          let geometryCollection=new GeometryCollection(geometries);
+          this.map.getView().fit(geometryCollection.getExtent());
         }
+        //对geometry进行监听
+        // getDrawGeometry(newGeometry) {
+        //   console.log(newGeometry);
+        // },
+        // getDraw(newDraw){
+        //   this.map.addInteraction(newDraw);
+        //   newDraw.on('drawend',(evt)=>{
+        //     console.log(evt);
+        //     // this.$store.commit('geometryChange',evt);
+        //   });
+        // }
+
+
+        // getKeyWord:{
+        //   handler(newObject,oldObject){
+        //     this.$axios.get(this.HOST+'/searchfeature',{
+        //       params: {
+        //         keyWord: newObject.searchKeyWord,
+        //         keyWordType:newObject.searchType
+        //       }
+        //     }).then((data)=>{
+        //       if(data.data[0].features){
+        //         console.log('查询feature');
+        //         this.$store.commit('featuresChange',data.data[0]);
+        //         this.addSelectedFeaturesToMap();
+        //       }
+        //     }).catch((err)=>{
+        //       console.log(err);
+        //     })
+        //   },
+        //   deep:true
+        // }
       }
     }
 </script>

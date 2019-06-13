@@ -6,9 +6,14 @@ import router from './router'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import store from './store'
+// import  from "axios";
+import axios from './api/axios'
+
+Vue.prototype.$axios=axios;
 Vue.use(iView);
 
 Vue.config.productionTip = false
+Vue.prototype.HOST='/api'
 
 /* eslint-disable no-new */
 new Vue({

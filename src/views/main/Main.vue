@@ -1,5 +1,4 @@
 <template>
-
   <Layout class="layout">
     <Header class="header">
       <h1>天津市滨海新区地下管线综合管理系统</h1>
@@ -32,14 +31,6 @@
             <span>连通性析</span>
           </MenuItem>
         </Menu>
-        <!--<ModalItem :value="itemID" :width="width">-->
-          <!--<div slot="header">标题</div>-->
-          <!--<p>这里是内容</p>-->
-
-        <!--</ModalItem>-->
-        <!--<Modal v-model="itemID">-->
-          <!--<div slot="header">{{this.itemID}}</div>-->
-        <!--</Modal>-->
       </Sider>
       <Layout>
         <Header class="header-con" >
@@ -49,10 +40,12 @@
         </Header>
         <Content >
           <Map class="mapContainer"></Map>
-
-          <Modal id="modal-module" ref="modal" v-model="modal1" :footer-hide=true :draggable=true class-name="modal-style">
+          <Modal id="modal-module" ref="modal" v-model="modal1" :footer-hide=true :draggable=true :width="width" >
             <div slot="header" class="modal-title">{{moduleTitle}}</div>
-            <component :is="currentView"></component>
+            <keep-alive>
+              <component :is="currentView"></component>
+            </keep-alive>
+
           </Modal>
         </Content>
       </Layout>
@@ -63,16 +56,14 @@
 <script>
   import HeaderBar from './components/header-bar'
   import FullScreen from './components/fullscreen'
-  import LegendControl from './components/legend-control'
   import {Layer,Search,Statistic,Collide,Distance,Connection} from '../moudle'
   import Map from '../map'
-  // import DialogModal from '@/components/dialog-modal'
+
     export default {
         name: "Main",
       components: {
         HeaderBar,
         FullScreen,
-        LegendControl,
         Layer, Search,Statistic,Collide,Distance,Connection,
         Map
       },
@@ -109,26 +100,38 @@
               name:'Connection'
             }
           ],
-          currentView:''
+          currentView:'',
+          width:''
         }
       },
       methods:{
         handleCollapsedChange (state) {
           this.isCollapsed = state
         },
+        //Modal里
         showOperationModal(name){
           this.modal1=true;
           this.currentView=name;
-
-
-          // this.$Modal.info({
-          //
-          //   render:(h)=>{
-          //     return h(Search)
-          //   }
-          // })
-
-
+          switch (name){
+            case 'Layer':
+              this.width='250';
+              break;
+            case 'Search':
+              this.width='500';
+              break;
+            case 'Statistic':
+              this.width='500';
+              break;
+            case 'Collide':
+              this.width='500';
+              break;
+            case 'Distance':
+              this.width='500';
+              break;
+            case 'Connection':
+              this.width='200';
+              break;
+          }
         }
       },
       computed: {

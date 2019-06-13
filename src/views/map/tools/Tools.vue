@@ -5,7 +5,7 @@
         <!--</li>-->
         <!--<Icon type="ios-information-circle" />信息查看-->
         <!--<Icon type="md-resize" /> 测量-->
-        <li><a >要素查看<Icon type="ios-information-circle" size="25"></Icon></a></li>
+        <li><GetFeatureInfo></GetFeatureInfo></li>
         <li><MeasureTool></MeasureTool></li>
         <li><Tile></Tile></li>
         <li><Magnify></Magnify></li>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  import {FullScreen,Tile,MeasureTool,HomeView,Magnify} from './tool-component'
+  import {FullScreen,Tile,MeasureTool,HomeView,Magnify,GetFeatureInfo} from './tool-component'
     export default {
         name: "Tools",
       components:{
@@ -27,7 +27,8 @@
         Tile,
         MeasureTool,
         HomeView,
-        Magnify
+        Magnify,
+        GetFeatureInfo
       },
       data(){
           return {
@@ -74,7 +75,7 @@
     display:inline-block;
     float:left;
     width:80px;
-    height:100px;
+    height:50px;
     list-style: none;
     text-align: center;
 

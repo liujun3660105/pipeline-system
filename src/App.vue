@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <router-view/>
-
   </div>
 </template>
 
@@ -26,8 +25,14 @@ export default {
   .ivu-modal-content {
     background:rgba(0,0,0,0.5);
   }
+  .ivu-modal-body{
+    padding:0px;
+  }
   .ol-mouse-position{
     font-size:20px;
+  }
+  .ivu-tree-arrow{
+    color:white;
   }
   .ivu-tree-title{
     color:white;
@@ -81,6 +86,9 @@ export default {
     bottom: -6px;
     margin-left: -7px;
     left: 50%;
+  }
+  .ivu-divider-inner-text{
+    color:white;
   }
 
 </style>

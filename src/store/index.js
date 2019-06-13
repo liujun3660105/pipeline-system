@@ -1,15 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import layer from './modules/layer'
+import search from './modules/search'
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
-    layers:[]
     //
   },
   mutations: {
-    layerChange(state,data){
-      state.layers=data
-    }
     //
   },
   actions: {
@@ -19,6 +17,8 @@ export default new Vuex.Store({
     // }
   },
   modules: {
+    layer,
+    search
 
   }
 })

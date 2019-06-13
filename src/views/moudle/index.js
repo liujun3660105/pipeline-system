@@ -1,5 +1,5 @@
 import Layer from './Layer'
-import Search from './Search'
+import Search from './search'
 import Statistic from './Statistic'
 import Collide from './Collide'
 import Distance from './Distance'

@@ -3,5 +3,6 @@ import HomeView from './HomeView'
 import MeasureTool from './MeasureTool'
 import Tile from './Tile'
 import Magnify from './Magnify'
+import GetFeatureInfo from './GetFeatureInfo'
 
-export {FullScreen,HomeView,MeasureTool,Tile,Magnify}
+export {FullScreen,HomeView,MeasureTool,Tile,Magnify,GetFeatureInfo}

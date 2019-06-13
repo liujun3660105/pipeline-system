@@ -22,7 +22,6 @@
       },
       methods:{
         _load(){
-          console.log(this.isFullScreen,'FullScreen的load事件里');
           this.elem = this.map.getTargetElement();
           document.addEventListener('fullscreenchange', () => {
             console.log('fullscreenchange');
@@ -69,7 +68,6 @@
           }
         },
         fullScreenChange(){
-          console.log(this.value);
           if(this.value){
             this.exitFullScreen();
           }

@@ -9,6 +9,9 @@
   import TileLayer from 'ol/layer/Tile'
     export default {
       name: "Search",
+      //layer组件初始化数据，这里的layer是null，如果只在这里声明，并且补齐layer，在Map组件中map.addLayer时会与vuex发生冲突。
+      // 到目前仍未找到原因。目前的解决方案是把所有的图层都在Map组件声明（themeLayer），并设置为隐藏，然后全部添加到图层中
+      //当Tree组件发生变化时，得到选择的所有图层 进行显示和隐藏的配置
       data() {
         return {
           data: [
@@ -23,7 +26,8 @@
                     {
                       title: '普查',
                       expand: true,
-                      value:'pc'
+                      value:'pc',
+                      layer:null
                     },
                     {
                       title: '调绘',
@@ -42,11 +46,13 @@
                 {
                   title: '物探管线',
                   expand: true,
-                  value:'wt'
+                  value:'wt',
+                  layer:null
                 },
                 {
                   title: '规划管线',
                   expand: true,
+                  value:'xm',
                   layer:null
                 }
               ]
@@ -58,12 +64,14 @@
                 {
                   title: '道路中线',
                   expand: false,
+                  value:'dlzx',
                   layer:null
 
                 },
                 {
                   title: '道路红线',
                   expand: false,
+                  value:'dlhx',
                   layer:null
                 }
               ]
@@ -71,52 +79,15 @@
             {
               title: '控规',
               expand: true,
+              value:'kg',
               layer:null
             }
           ]
         }
       },
       methods:{
-        init(){
-          //物探图层
-          var prospectWMSLayer=new TileLayer({
-            source:new TileWMS({
-              url: 'http://localhost:8080/geoserver/pipeline/wms',
-              params: {
-                // 'FORMAT': 'jpg',
-                // 'VERSION': '1.1.1',
-                tiled: true,
-                "LAYERS": 'pipeline:prospectData',
-                // "exceptions": 'application/vnd.ogc.se_inimage'
-                // tilesOrigin: 93615.0703125 + "," + 236681.1875,
-              },
-              projection:'EPSG:4326'
-            }),
-            zIndex:2
-          });
-          //普查图层
-          var pcWMSLayer =new TileLayer({
-            source:new TileWMS({
-              url: 'http://localhost:8080/geoserver/pipeline/wms',
-              params: {
-                // 'FORMAT': 'jpg',
-                // 'VERSION': '1.1.1',
-                tiled: true,
-                "LAYERS": 'pipeline:puchaData',
-                // "exceptions": 'application/vnd.ogc.se_inimage'
-                // tilesOrigin: 93615.0703125 + "," + 236681.1875,
-              },
-              projection:'EPSG:4326'
-            }),
-            zIndex:2
-          });
-          var xmWMSLayer;//项目图层
-          //专题图层->管线图层->普查图层->普查
-          // this.data[0].children[0].children[0].layer=pcWMSLayer;
-          //专题图层->管线图层->物探图层
-          // this.data[0].children[1].layer=prospectWMSLayer;
-        },
 
+         //过滤所有选择的图层，得到所有最底层节点图层
         layerSelect(data){
           // console.log(this.$store.state.layer);
           let layers=data;
@@ -126,24 +97,19 @@
                 newLayers.push(layers[index]);
             }
           }
-          // console.log(newLayers);
+          // 修改vuex中layer模块的Layer数据，在Map组件中会有接收
           this.$store.commit('layerChange',newLayers);
         }
-      },
-      mounted(){
-        this.init();
 
-      },
-      created(){
-        // this.init();
       }
     }
 </script>
 
 <style scoped>
   .layer{
-    width:500px;
     height:500px;
+    width:250px;
+    overflow:auto;
   }
 
 
