@@ -70,7 +70,6 @@
               });
 
                 this.$axios.get(url).then((data)=>{
-
                   if(data.data.features.length){
                     this.isShownAwait=false;//当搜索到要素的时候，异步结束，等待界面消失，显示信息框
                     this.featureInfo=data.data.features[0].properties;

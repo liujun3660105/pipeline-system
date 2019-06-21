@@ -7,9 +7,10 @@
 <script>
   import TileWMS from 'ol/source/TileWMS'
   import TileLayer from 'ol/layer/Tile'
+  import {mapGetters} from 'vuex'
     export default {
       name: "Search",
-      //layer组件初始化数据，这里的layer是null，如果只在这里声明，并且补齐layer，在Map组件中map.addLayer时会与vuex发生冲突。
+      //layer组件初始化数据，这里的layer是null，如果只在这里声明，并且补齐layer，在Map组件中map.addLayer时会与vuex发生冲突,max递归组件的错误。
       // 到目前仍未找到原因。目前的解决方案是把所有的图层都在Map组件声明（themeLayer），并设置为隐藏，然后全部添加到图层中
       //当Tree组件发生变化时，得到选择的所有图层 进行显示和隐藏的配置
       data() {
@@ -66,7 +67,6 @@
                   expand: false,
                   value:'dlzx',
                   layer:null
-
                 },
                 {
                   title: '道路红线',
@@ -85,8 +85,12 @@
           ]
         }
       },
+      computed:{
+        ...mapGetters([
+          'getAccessLayers'
+        ])
+      },
       methods:{
-
          //过滤所有选择的图层，得到所有最底层节点图层
         layerSelect(data){
           // console.log(this.$store.state.layer);
@@ -101,6 +105,9 @@
           this.$store.commit('layerChange',newLayers);
         }
 
+      },
+      created(){
+        this.data=this.getAccessLayers;
       }
     }
 </script>

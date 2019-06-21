@@ -1,6 +1,7 @@
 import Axios from 'axios'
-//请求拦截器
 
+Axios.defaults.baseURL ='http://localhost:5000';
+//请求拦截器
 Axios.interceptors.request.use((config)=>{
   return config;
 },(error)=>{

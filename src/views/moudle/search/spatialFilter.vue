@@ -21,7 +21,6 @@
       },
       methods: {
         _load() {
-          console.log('spatialFilter');
           this.drawVectorSource = new Vector();
           this.drawVectorLayer = new VectorLayer({
             source: this.drawVectorSource,
