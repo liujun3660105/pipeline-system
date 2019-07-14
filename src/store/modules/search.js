@@ -7,7 +7,8 @@ export default {
     features:[],
     isDraw:false,
     geomWKT:'',
-    DbClickRowXmId:''
+    DbClickRowXmId:'',
+    selectedVectorLayer:null
   },
   mutations:{
     //选择的图层
@@ -21,19 +22,16 @@ export default {
     isDrawChange(state,data){
       state.isDraw=data;
     },
-    geometryChange(state,data){
+    searchGeometryChange(state,data){
       state.geomWKT=data;
     },
     DbClickRowXmIdChange(state,data){
       state.DbClickRowXmId=data;
+    },
+    selectLayerChange(state,data){
+      state.selectedVectorLayer=data;
     }
-    // drawChange(state,data){
 
-    //   state.draw=data;
-    // },
-    // geometryChange(state,data){
-    //   state.geometry=data;
-    // }
 
 
   },

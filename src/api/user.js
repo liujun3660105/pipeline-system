@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 // import Vue from 'vue'
 export const TOKEN_KEY = 'token';
 export const setToken = (token) => {
-  Cookies.set(TOKEN_KEY, token, { expires: 1})//设置5分钟后过期
+  Cookies.set(TOKEN_KEY, token, { expires: 1})//设置一天后过期
 };
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)

@@ -38,7 +38,7 @@
     </div>
 </template>
 <script>
-
+  import {mapState,mapMutations} from 'vuex'
     export default {
         name: "Search",
         data(){
@@ -49,7 +49,6 @@
               {value:'snsj',label:'所内设计'},
               {value:'snsc',label:'所内审查'},
               {value:'ysp',label:'已审批'}
-
             ],
             spatialSelectedType:'',
             xmInfoColumns: [
@@ -68,14 +67,17 @@
           return this.$store.state.search.searchParams;
         },
         getDrawEnable(){
-          return this.$store.state.search.isDraw;
+          return this.$store.state.draw.isDraw;
         },
         getDrawGeometry(){
           return this.$store.state.search.geomWKT;
         }
       },
         methods:{
-
+          ...mapMutations('draw',[
+            'isDrawChange',
+            'moduleTypeChange'
+          ]),
         searchByKeyWord(){
           if(this.keyWordType){
             //修改初始值和vuex中search.js的searchParams
@@ -285,31 +287,32 @@
                 break;
             }
             //项目查询
-            this.$axios.get(this.HOST+'/searchxminfobykeyword',{
+            this.$axios.get('/searchxminfobykeyword',{
               params: {
                 keyWord: this.keyWord,
                 keyWordType: this.keyWordType
               }
-            }).then((data)=>{
+            }).then((res)=>{
+
               this.isShownTableContent=true;
-              this.xmInfo=data.data;
+              this.xmInfo=res.data.data;
             }).catch((err)=>{
-              console.log(err);
+
             })
 
             //要素查询
-            this.$axios.get(this.HOST+'/searchfeaturebykeyword',{
+            this.$axios.get('/searchfeaturebykeyword',{
               params: {
                 keyWord: this.keyWord,
                 keyWordType:this.keyWordType
               }
-            }).then((data)=>{
-              if(data.data[0].features){
-                this.$store.commit('featuresChange',data.data[0]);
+            }).then((res)=>{
+
+              if(res.data.data[0].features){
+                this.$store.commit('featuresChange',res.data.data[0]);
                 // this.addSelectedFeaturesToMap();
               }
             }).catch((err)=>{
-              console.log(err);
             })
           }
           else{
@@ -323,7 +326,8 @@
           if(this.spatialSelectedType){
             this.keyWordType='';
             this.isDraw=true;//设置按钮不可用
-            this.$store.commit('isDrawChange',true);//设置vuex中search的值，让map组件的子组件spatialFilter开始画图
+            this.isDrawChange(true);//开启画图
+            this.moduleTypeChange('search');//设置vuex中draw模块的moduletype值告诉DrawGeometry是查询模块调用画图工具
 
           }
           else{
@@ -332,10 +336,6 @@
               duration:1
             });
           }
-
-
-
-
         },
         clear(){
           this.isShownTable=false;
@@ -804,18 +804,17 @@
               break;
           }
           //根据画的geometry查询要素涉及的项目编号
-          this.$axios.get(this.HOST+'/getidbygeom',{
+          this.$axios.get('/getidbygeom',{
             params:{
               drawGeometry:newGeometryWKT,
               searchType:this.spatialSelectedType
             }
-          }).then((data)=>{
-            console.log(data);
+          }).then((res)=>{
             //对获得的项目编号进行拼凑[2018,2019]=>"'2018','2019'"
             var xmIdsParam
             var xmIds=[];
-            if(data.data.length!==0){
-              xmIds=data.data.map((val)=>{
+            if(res.data.data.length!==0){
+              xmIds=res.data.data.map((val)=>{
                 return "'"+val+"'"
               });
               xmIdsParam=xmIds.join(',')
@@ -825,28 +824,25 @@
             }
             return xmIdsParam
           }).then(data=>{
-            console.log(data);
             //根据得到的项目编号，对项目信息和涉及的要素进行查询
             //项目信息查询
-            this.$axios.get(this.HOST+'/searchxminfobyid',{
+            this.$axios.get('/searchxminfobyid',{
               params:{
                 xmIds:data,
                 searchType:this.spatialSelectedType
               }
-            }).then(data=>{
-              console.log(data);
-
+            }).then(res=>{
               this.isShownTableContent=true;//显示表格内容
-              this.xmInfo=data.data;
+              this.xmInfo=res.data.data;
             });
             //要素信息查询
-            this.$axios.get(this.HOST+'/searchfeaturebyid',{
+            this.$axios.get('/searchfeaturebyid',{
               params:{
                 xmIds:data,
                 searchType:this.spatialSelectedType
               }
-            }).then(data=>{
-                this.$store.commit('featuresChange',data.data[0]);
+            }).then(res=>{
+                this.$store.commit('featuresChange',res.data.data[0]);
             });
           })
 

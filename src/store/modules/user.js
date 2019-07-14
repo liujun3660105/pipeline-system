@@ -6,8 +6,6 @@ export default {
     token:getToken(),
     access:'',
     hasGetInfo: false
-
-
   },
   mutations:{
     setToken(state,token){
@@ -21,8 +19,6 @@ export default {
       state.access = access
     },
     setHasGetInfo(state,status){
-      console.log(status);
-      console.log('执行mutation');
       state.hasGetInfo=status;
 
     }
@@ -65,10 +61,7 @@ export default {
           context.commit('setToken', '')
           context.commit('setAccess', '')
           resolve()
-        // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
-        // commit('setToken', '')
-        // commit('setAccess', [])
-        // resolve()
+        // 如果退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
       })
     },
 

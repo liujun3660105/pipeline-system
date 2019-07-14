@@ -55,45 +55,8 @@
           isCollapsed: false,
           isFullScreen:false,
           itemID:'',
-          width:500,
           modal1:false,
           moduleList:[
-            // {
-            //   id: 1,
-            //   title: '图层控制',
-            //   name: 'Layer',
-            //   icon: 'logo-buffer'
-            // },
-            // {
-            //   id: 2,
-            //   title: '查询分析',
-            //   name: 'Search',
-            //   icon: 'ios-search'
-            // },
-            // {
-            //   id: 3,
-            //   title: '统计分析',
-            //   name: 'Statistic',
-            //   icon: 'md-stats'
-            // },
-            // {
-            //   id: 4,
-            //   title: '碰撞分析',
-            //   name: 'Collide',
-            //   icon: 'md-shuffle'
-            // },
-            // {
-            //   id: 5,
-            //   title: '净距分析',
-            //   name: 'Distance',
-            //   icon: 'md-pause'
-            // },
-            // {
-            //   id: 6,
-            //   title: '连通分析',
-            //   name: 'Connection',
-            //   icon: 'logo-steam'
-            // }
           ],
           currentView:'',
           width:''
@@ -115,7 +78,7 @@
               this.width='500';
               break;
             case 'Statistic':
-              this.width='500';
+              this.width='1000';
               break;
             case 'Collide':
               this.width='500';
@@ -161,6 +124,7 @@
   }
   .layout{
     height:100%;
+    overflow:hidden;
   }
   .main-body{
     height:100%;

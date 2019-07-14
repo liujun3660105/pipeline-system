@@ -1,7 +1,6 @@
 <template>
-    <div></div>
+  <div></div>
 </template>
-
 <script>
   import ready from '@/mixins/ready';
   import Draw from 'ol/interaction/Draw.js';
@@ -9,14 +8,14 @@
   import Vector from 'ol/source/Vector'
   import VectorLayer from 'ol/layer/Vector'
   import WKT from 'ol/format/WKT'
-
+  import {mapState,mapMutations} from 'vuex'
     export default {
-      name: "spatialFilter",
+      name: "DrawGeometry",
       mixins: [ready],
       data() {
         return {
           drawVectorSource: null,
-          drawVectorLayer: null,
+          drawVectorLayer: null
         }
       },
       methods: {
@@ -43,18 +42,30 @@
                 })
               })
             }),
-            zIndex: 3
+            zIndex: 10
           });
           this.map.addLayer(this.drawVectorLayer);
-        }
+        },
+        ...mapMutations('draw',[
+          'isDrawChange'
+        ]),
+        ...mapMutations([
+          'statisticGeometryChange',
+          'searchGeometryChange'
+        ])
       },
       computed: {
-        getDrawEnable() {
-          return this.$store.state.search.isDraw
-        }
+        ...mapState('draw',[
+          'isDraw',
+          'moduleType'
+        ])
+        // getDrawEnable() {
+        //   return this.$store.state.search.isDraw
+        // }
       },
       watch: {
-        getDrawEnable(newDrawEnable) {
+        isDraw(newDrawEnable) {
+          console.log(newDrawEnable);
           if (newDrawEnable) {
             this.drawVectorSource.clear();
             var draw = new Draw({
@@ -81,14 +92,23 @@
               })
             });
             draw.on('drawend',(evt)=>{
-
               this.map.removeInteraction(draw);
-              this.$store.commit('isDrawChange',false);
               //把画的几何图形转换成WKT格式
-              var wkt=new WKT();
+              let wkt=new WKT();
               let geometryWKT=wkt.writeGeometryText(evt.feature.getGeometry());
-              this.$store.commit('geometryChange',geometryWKT);
+              // this.$store.commit('geometryChange',geometryWKT);
+              //从draw.js传过来的值 来判断是哪个模块调用画图供能
+              if(this.moduleType==='search'){
+                console.log('查询模块调用画图功能');
+                this.searchGeometryChange(geometryWKT);
+              }
+              if(this.moduleType==='statistic'){
+                console.log('统计模块调用画图功能');
+                this.statisticGeometryChange(geometryWKT);
+              }
 
+              // this.$store.commit('isDrawChange',false);
+              this.isDrawChange(false);
             });
             this.map.addInteraction(draw);
           }

@@ -14,6 +14,7 @@ export default {
 <style>
   html,body{
     height:100%;
+    overflow:hidden;
   }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -89,6 +90,9 @@ export default {
   }
   .ivu-divider-inner-text{
     color:white;
+  }
+  #app{
+    overflow:hidden;
   }
 
 </style>

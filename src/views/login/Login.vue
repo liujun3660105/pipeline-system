@@ -33,16 +33,13 @@
         ]),
         handleSubmit({userName, password}) {
           this.handleLogin({userName, password}).then(res => {
-            console.log(res);
-            if (res.status == 200) {
+            if (res.status === 200) {
               this.getUserInfo().then(res => {
-                console.log(res);
                 this.$router.push({
                   name: 'home'
                 })
               })
             } else {
-
               this.errInfo = res.data;
               this.$Notice.error({
                 title:this.errInfo

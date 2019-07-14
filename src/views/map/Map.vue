@@ -4,8 +4,10 @@
 
       </Tools>
       <Legend></Legend>
-      <SpatialFilter></SpatialFilter>
+      <!--<SpatialFilter></SpatialFilter>-->
+      <DrawGeometry></DrawGeometry>
       <ShowFeatureInfo></ShowFeatureInfo>
+      <SelectFeature></SelectFeature>
     </div>
 
 </template>
@@ -47,9 +49,10 @@
   import {createStringXY} from 'ol/coordinate.js';
   import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction.js';
   import Legend from '@/components/map/Legend'
-  import SpatialFilter from '@/views/moudle/search/spatialFilter'
+  // import SpatialFilter from '@/views/moudle/search/spatialFilter'
   import ShowFeatureInfo from '@/views/moudle/search/ShowFeatureInfo'
-
+  import DrawGeometry from '@/components/map/DrawGeometry'
+  import SelectFeature from '@/views/moudle/search/SelectFeature'
     export default {
       name: "Map",
       provide() {
@@ -160,8 +163,8 @@
 
 
           ],
-          selectedVectorLayer:null,
-          selectedVectorSource:null,
+          // selectedVectorLayer:{a:1},
+          // selectedVectorSource:null,
           selectedFeatures:[]
         }
 
@@ -175,19 +178,19 @@
         //   return this.$store.state.search.searchParams;
         // },
         //从vuex中获取features
-        getSelectedFeatures(){
-          return this.$store.state.search.features
-          //从后端传来的数据成果有两种形式，一种是geojson数据，一种是json数据，对应后台的sql语句
-          //注释部分为json部分，但是feature和properities是分离的，对于后期不好实现点击查看要素信息,所以利用的是geojson数据
-          // let selectedGeoms=[];
-          // selectedFeatures.forEach((feature,index)=>{
-          //   console.log(JSON.parse(feature.geom));
-          //   selectedGeoms.push(JSON.parse(feature.geom).coordinates);
-          // });
-        },
-        getDbClickRowXmId(){
-          return this.$store.state.search.DbClickRowXmId;
-        },
+        // getSelectedFeatures(){
+        //   return this.$store.state.search.features
+        //   //从后端传来的数据成果有两种形式，一种是geojson数据，一种是json数据，对应后台的sql语句
+        //   //注释部分为json部分，但是feature和properities是分离的，对于后期不好实现点击查看要素信息,所以利用的是geojson数据
+        //   // let selectedGeoms=[];
+        //   // selectedFeatures.forEach((feature,index)=>{
+        //   //   console.log(JSON.parse(feature.geom));
+        //   //   selectedGeoms.push(JSON.parse(feature.geom).coordinates);
+        //   // });
+        // },
+        // getDbClickRowXmId(){
+        //   return this.$store.state.search.DbClickRowXmId;
+        // },
         // getDrawGeometry(){
         //   return this.$store.state.search.geometry
         // }
@@ -195,8 +198,10 @@
       components: {
         Tools,
         Legend,
-        SpatialFilter,
-        ShowFeatureInfo
+        // SpatialFilter,
+        ShowFeatureInfo,
+        DrawGeometry,
+        SelectFeature
       },
       mounted() {
         this.initMap();
@@ -243,41 +248,41 @@
           this.addLayersToMap();
 
           //设置筛选出的要素相关图层和源
-          this.selectedVectorSource=new Vector();
-          this.selectedVectorLayer=new VectorLayer({
-            source:this.selectedVectorSource,
-            // new Vector({
-            // features:features
-            //这里features是数组
-            // features:[new Feature({
-            //   geometry:new MultiLineString(this.getSelectedFeatures)
-            // })]
-            // features:new Collection({
-            //   array:new MultiLineString(this.getSelectedFeatures)
-            // })
-            // }),
-            style:new Style({
-              fill: new Fill({
-                color: 'rgba(255, 255, 255, 0.2)'
-              }),
-              stroke: new Stroke({
-                color: 'rgba(0, 0, 0, 0.5)',
-                lineDash: [10, 10],
-                width: 5
-              }),
-              image: new CircleStyle({
-                radius: 5,
-                stroke: new Stroke({
-                  color: 'rgba(0, 0, 0, 0.7)'
-                }),
-                fill: new Fill({
-                  color: 'rgba(255, 255, 255, 0.2)'
-                })
-              })
-            }),
-            zIndex:3
-          });
-          this.map.addLayer(this.selectedVectorLayer);
+          // this.selectedVectorSource=new Vector();
+          // this.selectedVectorLayer=new VectorLayer({
+          //   source:this.selectedVectorSource,
+          //   // new Vector({
+          //   // features:features
+          //   //这里features是数组
+          //   // features:[new Feature({
+          //   //   geometry:new MultiLineString(this.getSelectedFeatures)
+          //   // })]
+          //   // features:new Collection({
+          //   //   array:new MultiLineString(this.getSelectedFeatures)
+          //   // })
+          //   // }),
+          //   style:new Style({
+          //     fill: new Fill({
+          //       color: 'rgba(255, 255, 255, 0.2)'
+          //     }),
+          //     stroke: new Stroke({
+          //       color: 'rgba(0, 0, 0, 0.5)',
+          //       lineDash: [10, 10],
+          //       width: 5
+          //     }),
+          //     image: new CircleStyle({
+          //       radius: 5,
+          //       stroke: new Stroke({
+          //         color: 'rgba(0, 0, 0, 0.7)'
+          //       }),
+          //       fill: new Fill({
+          //         color: 'rgba(255, 255, 255, 0.2)'
+          //       })
+          //     })
+          //   }),
+          //   zIndex:3
+          // });
+          // this.map.addLayer(this.selectedVectorLayer);
 
         },
         //将data中初始化的图层依次添加到地图中
@@ -317,70 +322,39 @@
         },
         //对搜索的关键字和搜索类型进行监听，点击Search组件搜索按钮后，vuex中search模块的数据发生改变
         //异步获取xmline表的要素数据，更改vuex中search模块的features
-        getSelectedFeatures(newFeatureList){
-          this.selectedVectorSource.clear();
-          if(newFeatureList.features){//如果查询的结果不为空，则进行要素显示和定位
-            let selectedFeatures=new GeoJSON().readFeatures(newFeatureList);
-            this.selectedVectorSource.addFeatures(selectedFeatures);
-            this.map.getView().fit(this.selectedVectorSource.getExtent());
-          }
-        },
+        // getSelectedFeatures(newFeatureList){
+        //   this.selectedVectorSource.clear();
+        //   if(newFeatureList.features){//如果查询的结果不为空，则进行要素显示和定位
+        //     let selectedFeatures=new GeoJSON().readFeatures(newFeatureList);
+        //     this.selectedVectorSource.addFeatures(selectedFeatures);
+        //     this.map.getView().fit(this.selectedVectorSource.getExtent());
+        //   }
+        // },
 
         //双击表格某一行，得到这一行数据的项目编号
-        getDbClickRowXmId(newXmId){
-          this.selectedFeatures.forEach(feature=>{
-            feature.setStyle(null);
-          });
-          this.selectedFeatures=this.selectedVectorSource.getFeatures().filter(feature=>{
-            return feature.getProperties().xmbm===newXmId
-          });
-          let style=new Style({
-            stroke: new Stroke({
-              color: 'rgba(220, 20, 60, 0.9)',
-              lineDash: [10, 10],
-              width: 5
-            }),
-          });
-          let geometries=[];
-          this.selectedFeatures.forEach(feature=>{
-            geometries.push(feature.getGeometry());
-            feature.setStyle(style);
-          });
-          let geometryCollection=new GeometryCollection(geometries);
-          this.map.getView().fit(geometryCollection.getExtent());
-        }
-        //对geometry进行监听
-        // getDrawGeometry(newGeometry) {
-        //   console.log(newGeometry);
-        // },
-        // getDraw(newDraw){
-        //   this.map.addInteraction(newDraw);
-        //   newDraw.on('drawend',(evt)=>{
-        //     console.log(evt);
-        //     // this.$store.commit('geometryChange',evt);
+        // getDbClickRowXmId(newXmId){
+        //   this.selectedFeatures.forEach(feature=>{
+        //     feature.setStyle(null);
         //   });
+        //   this.selectedFeatures=this.selectedVectorSource.getFeatures().filter(feature=>{
+        //     return feature.getProperties().xmbm===newXmId
+        //   });
+        //   let style=new Style({
+        //     stroke: new Stroke({
+        //       color: 'rgba(220, 20, 60, 0.9)',
+        //       lineDash: [10, 10],
+        //       width: 5
+        //     }),
+        //   });
+        //   let geometries=[];
+        //   this.selectedFeatures.forEach(feature=>{
+        //     geometries.push(feature.getGeometry());
+        //     feature.setStyle(style);
+        //   });
+        //   let geometryCollection=new GeometryCollection(geometries);
+        //   this.map.getView().fit(geometryCollection.getExtent());
         // }
 
-
-        // getKeyWord:{
-        //   handler(newObject,oldObject){
-        //     this.$axios.get(this.HOST+'/searchfeature',{
-        //       params: {
-        //         keyWord: newObject.searchKeyWord,
-        //         keyWordType:newObject.searchType
-        //       }
-        //     }).then((data)=>{
-        //       if(data.data[0].features){
-        //         console.log('查询feature');
-        //         this.$store.commit('featuresChange',data.data[0]);
-        //         this.addSelectedFeaturesToMap();
-        //       }
-        //     }).catch((err)=>{
-        //       console.log(err);
-        //     })
-        //   },
-        //   deep:true
-        // }
       }
     }
 </script>

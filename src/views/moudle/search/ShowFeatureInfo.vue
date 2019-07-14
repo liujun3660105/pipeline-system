@@ -19,6 +19,11 @@
         clickFeature:null
       }
     },
+    computed:{
+      selectedVectorLayer(){
+        return this.$store.state.search.selectedVectorLayer;
+      }
+    },
     methods:{
       _load(){
         this.map.on('click',(e)=>{
