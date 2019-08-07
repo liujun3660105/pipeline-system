@@ -49,7 +49,6 @@
             this.map.render();
           });
           this.imageLayer.on('postcompose', (event)=> {
-            console.log('aaa');
               if (this.mousePosition) {
                 var context = event.context;
                 var pixelRatio = event.frameState.pixelRatio;
@@ -64,7 +63,6 @@
                 var img = new Image();
                 img.crossOrigin = '';
                 img.onload = function () {
-                  console.log('bbb');
                   sourceData = context.getImageData(originX, originY, size, size).data;
                   dest = context.createImageData(size, size);
                   var destData = dest.data;

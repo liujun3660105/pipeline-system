@@ -12,7 +12,7 @@
   import GeometryCollection from 'ol/geom/GeometryCollection'
 
   export default {
-      name: "spatialFilter",
+      name: "SelectFeature",
       mixins: [ready],
       data() {
         return {
@@ -42,9 +42,9 @@
                 color: 'rgba(255, 255, 255, 0.2)'
               }),
               stroke: new Stroke({
-                color: 'rgba(0, 0, 0, 0.5)',
-                lineDash: [10, 10],
-                width: 5
+                color: 'rgba(255, 0, 0, 0.9)',
+                // lineDash: [10, 10],
+                width: 4
               }),
               image: new CircleStyle({
                 radius: 5,
@@ -58,7 +58,7 @@
             }),
             zIndex:3
           });
-          this.$store.commit('selectLayerChange',this.selectedVectorLayer)
+          this.$store.commit('selectLayerChange',this.selectedVectorLayer);
           this.map.addLayer(this.selectedVectorLayer);
         },
       },
@@ -80,14 +80,15 @@
       watch: {
         //异步获取xmline表的要素数据，更改vuex中search模块的features
         getSelectedFeatures(newFeatureList){
+          console.log(newFeatureList);
           this.selectedVectorSource.clear();
-          if(newFeatureList.features){//如果查询的结果不为空，则进行要素显示和定位
+          if(newFeatureList.features||newFeatureList.geometries){//如果查询的结果不为空，则进行要素显示和定位
+            //collide中如果上传的文件时火星坐标系，则不需要数据库进行转换，直接读取shp文件的geojson，格式为{"type":"FeatureCollection","geometries:[{"type":"LineString","coor"}]"}
             let selectedFeatures=new GeoJSON().readFeatures(newFeatureList);
             this.selectedVectorSource.addFeatures(selectedFeatures);
             this.map.getView().fit(this.selectedVectorSource.getExtent());
           }
         },
-
         //双击表格某一行，得到这一行数据的项目编号
         getDbClickRowXmId(newXmId){
           this.selectedFeatures.forEach(feature=>{
@@ -98,9 +99,9 @@
           });
           let style=new Style({
             stroke: new Stroke({
-              color: 'rgba(220, 20, 60, 0.9)',
-              lineDash: [10, 10],
-              width: 5
+              color: 'rgba(0, 255, 255, 0.9)',
+              // lineDash: [10, 10],
+              width: 4
             }),
           });
           let geometries=[];
@@ -108,6 +109,7 @@
             geometries.push(feature.getGeometry());
             feature.setStyle(style);
           });
+          console.log(this.selectedFeatures);
           let geometryCollection=new GeometryCollection(geometries);
           this.map.getView().fit(geometryCollection.getExtent());
         }

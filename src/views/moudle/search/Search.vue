@@ -293,7 +293,7 @@
                 keyWordType: this.keyWordType
               }
             }).then((res)=>{
-
+              console.log(res.data.data);
               this.isShownTableContent=true;
               this.xmInfo=res.data.data;
             }).catch((err)=>{
@@ -307,10 +307,10 @@
                 keyWordType:this.keyWordType
               }
             }).then((res)=>{
+              console.log(res);
 
               if(res.data.data[0].features){
                 this.$store.commit('featuresChange',res.data.data[0]);
-                // this.addSelectedFeaturesToMap();
               }
             }).catch((err)=>{
             })
@@ -328,7 +328,6 @@
             this.isDraw=true;//设置按钮不可用
             this.isDrawChange(true);//开启画图
             this.moduleTypeChange('search');//设置vuex中draw模块的moduletype值告诉DrawGeometry是查询模块调用画图工具
-
           }
           else{
             this.$Message.warning({
@@ -342,7 +341,7 @@
           this.$store.commit('featuresChange',[]);
         },
         selectRow(val,index){
-          this.$store.commit('DbClickRowXmIdChange',val.xmbh)
+          this.$store.commit('DbClickRowXmIdChange',val.xmbh);
         },
       },
       watch:{

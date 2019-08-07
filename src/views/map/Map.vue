@@ -1,5 +1,6 @@
 <template>
     <div class="map" id="map">
+      <CoordinateShown :coordinate-array="coordinateArray" @coorTypeChange="getCoorType"></CoordinateShown>
       <Tools @tileLayerIndexChange="receiveTileLayerIndex">
 
       </Tools>
@@ -49,6 +50,10 @@
   import {createStringXY} from 'ol/coordinate.js';
   import {defaults as defaultInteractions, DragRotateAndZoom} from 'ol/interaction.js';
   import Legend from '@/components/map/Legend'
+  import CoordinateShown from './CoordinateShown'
+  import proj from '@/mixins/proj'
+  import {gcj02tobd09,gcj02towgs84} from '@/api/latlngTransform'
+
   // import SpatialFilter from '@/views/moudle/search/spatialFilter'
   import ShowFeatureInfo from '@/views/moudle/search/ShowFeatureInfo'
   import DrawGeometry from '@/components/map/DrawGeometry'
@@ -165,10 +170,13 @@
           ],
           // selectedVectorLayer:{a:1},
           // selectedVectorSource:null,
-          selectedFeatures:[]
+          selectedFeatures:[],
+          coordinateArray:[],
+          coorType:''
         }
 
       },
+      mixins:[proj],
       computed: {
         //得到layer传过来的图层
         getSelectedLayers() {
@@ -201,7 +209,8 @@
         // SpatialFilter,
         ShowFeatureInfo,
         DrawGeometry,
-        SelectFeature
+        SelectFeature,
+        CoordinateShown
       },
       mounted() {
         this.initMap();
@@ -230,6 +239,7 @@
             minZoom:11
           });
 
+
           //设置鼠标移动时显示坐标值得控件
           var mousePositionControl = new MousePosition({
             coordinateFormat: createStringXY(4),
@@ -244,6 +254,9 @@
               new DragRotateAndZoom()
             ]),
             view: this.view
+          });
+          this.map.on('pointermove',(e)=>{
+            this.handleCoorType(e);
           });
           this.addLayersToMap();
 
@@ -296,6 +309,32 @@
         //接收从Tools传来的底图index
         receiveTileLayerIndex(index) {
           this.xyzIndex = index;
+        },
+        handleCoorType(e){
+          if (e.coordinate && e.coordinate.length) {
+            switch (this.coorType){
+              case 'CGCS2000':
+                this.coordinateArray = transform(e.coordinate, 'EPSG:4326', 'EPSG:4509');
+                break;
+              case 'TJ90':
+                this.coordinateArray = transform(e.coordinate, 'EPSG:4326', 'EPSG:90');
+                break;
+              case 'WGS84':
+                this.coordinateArray = gcj02towgs84(e.coordinate[0],e.coordinate[1]);
+                break;
+              case 'GCJ-02':
+                this.coordinateArray = e.coordinate;
+                break;
+              case 'BD09':
+                this.coordinateArray = gcj02tobd09(e.coordinate[0],e.coordinate[1]);
+                break;
+
+            }
+
+          }
+        },
+        getCoorType(coorType){
+          this.coorType=coorType;
         }
       },
       watch: {

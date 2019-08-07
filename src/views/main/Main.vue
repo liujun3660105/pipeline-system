@@ -81,7 +81,7 @@
               this.width='1000';
               break;
             case 'Collide':
-              this.width='500';
+              this.width='700';
               break;
             case 'Distance':
               this.width='500';

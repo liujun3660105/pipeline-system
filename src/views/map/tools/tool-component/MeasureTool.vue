@@ -23,6 +23,8 @@
   import {Vector as VectorLayer} from 'ol/layer.js';
   import {Vector as VectorSource} from 'ol/source.js';
   import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style.js';
+  import Projection from 'ol/proj/Projection';
+  import {get} from 'ol/proj'
     export default {
         name: "MeasureTool",
       mixins: [ready],
@@ -214,10 +216,19 @@
 
         //生成线的测量表示内容
         formatLength(line){
-          var sourceProj = this.map.getView().getProjection();
-          var length = getLength(line,{
-            projection:sourceProj
-          });
+          // var sourceProj = this.map.getView().getProjection();
+          // var sourceProj=new Projection('3857');
+          let lineto4326=line.clone();
+          let lineto3857=lineto4326.transform('EPSG:4326','EPSG:3857');
+          // console.log(lineto3857);
+          // var sourceProj=get('EPSG:3857');
+          // var length = getLength(lineto3857,{
+          //   projection:sourceProj
+          // });
+          var length=lineto3857.getLength();
+          // var length=getLength(line,{
+          //   projection:sourceProj
+          // });
           var output;
           if (length > 100) {
             output = (Math.round(length / 1000 * 100) / 100) +
@@ -230,10 +241,13 @@
         },
         //生成面的测量表示内容
         formatArea(polygon) {
-          var sourceProj = this.map.getView().getProjection();
-          var area = getArea(polygon,{
-            projection:sourceProj
-          });
+          // var sourceProj = this.map.getView().getProjection();
+          // var area = getArea(polygon,{
+          //   projection:sourceProj
+          // });
+          let polygon4326=polygon.clone();
+          let polygon3857=polygon4326.transform('EPSG:4326','EPSG:3857');
+          let area=polygon3857.getArea();
           var output;
           if (area > 10000) {
             output = (Math.round(area / 1000000 * 100) / 100) +

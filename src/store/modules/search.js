@@ -4,7 +4,7 @@ export default {
       searchKeyWord:'',
       searchType:''
     },
-    features:[],
+    features:null,
     isDraw:false,
     geomWKT:'',
     DbClickRowXmId:'',
