@@ -30,17 +30,18 @@
         <i-col span="12">
           <div class="upload-item">
             <Upload ref="upload"
-              action="//jsonplaceholder.typicode.com/poss/"
+              action=""
               :format='format'
               :accept="accept"
               :max-size="maxSize"
               :on-format-error="handleFormatError"
               :on-exceeded-size="handleSizeError"
               :before-upload="handleBeforeUpload"
+              :on-error="handleError"
             >
               <Button :disabled="startUpload" icon="ios-cloud-upload-outline">请选择上传文件</Button>
             </Upload>
-            <div class="upload-info"  v-if="file !== null">Upload file: {{ file.name }} <Button  @click="upload" :loading="loadingStatus">{{ loadingStatus ? 'Uploading' : 'Click to upload' }}</Button></div>
+            <div class="upload-info"  v-if="file !== null">Upload file: {{ file.name }} <Button  @click="upload" :loading="loadingStatus">{{ loadingStatus ? '正在载入' : '点击上传' }}</Button></div>
           </div>
         </i-col>
 
@@ -92,33 +93,46 @@
             file: null,
             // format:"['']",
             // accept:'',
-            loadingStatus: false,
+            loadingStatus: true,
             gxInfoColumns: [
               {
-                title: '编号',
+                title: 'ID',
                 key: 'xmbm',
                 width:150,
                 align:'center'
               },
               {
-                title: '冲突管线编号',
-                key: 'conflictid',
+                title: '管线编号',
+                key: 'rec_ctid',
                 width:150,
                 tooltip:true,
                 align:'center'
               },
               {
-                title: '冲突管线类型',
-                key: 'zy',
+                title: '专业',
+                key: 'gxdldm',
                 width:190,
                 align:'center'
               },
               {
-                title: '冲突管线长度',
-                key: 'length',
+                title: '管径',
+                key: 'gj',
+                width:200,
+                align:'center'
+              },
+              {
+                title: '压力值',
+                key: 'ylz',
+                width:200,
+                align:'center'
+              },
+              {
+                title: '埋设方式',
+                key: 'msfs',
                 width:200,
                 align:'center'
               }
+
             ],
             gxInfoData: [
             ],
@@ -235,7 +249,11 @@
             'featuresChange',
             'DbClickRowXmIdChange'
           ]),
+        ...mapMutations('collide',[
+          'uploadFeaturesChange'
+        ]),
         handleBeforeUpload (file) {
+          this.loadingStatus=true;
           let fileSuffix=this.getFileSuffix(file.name);
           if(fileSuffix===this.dataType&&file.size<=this.maxSize*1024){
             this.file=file;
@@ -252,17 +270,32 @@
           formData.append('file',this.file);
           formData.append('coortype',this.coorType);
             getUploadGeometry(formData).then((res)=>{
-              //注意这里返回的数据和select组件中返回的数据不一样，这里返回的是["{}"]
-              //select 返回的是[{}]
-              console.log(res);
-              this.uploadGeoJsonStr=res.data.data;//后面分析的时候需要用
-              let geoJsonResult=JSON.parse(res.data.data);
-              this.featuresChange(geoJsonResult);
-              this.gxTypeEnable=false;
+              if(res.status===201){
+                this.$Notice.warning({
+                  title: res.data.data,
+                  desc: '空间数据类型有误，只准许上传线数据类型！'
+                });
+              }
+              else if(res.status===202){
+                this.$Notice.warning({
+                  title: res.data.data,
+                  desc: '坐标超出范围，请选择合适的坐标系或核对数据坐标!'
+                });
+              }
+              else{
+                  //注意这里返回的数据和select组件中返回的数据不一样，这里返回的是["{}"]
+                  //select 返回的是[{}]
+                  this.uploadGeoJsonStr=res.data.data;//后面分析的时候需要用
+                  let geoJsonResult=JSON.parse(res.data.data);
+                  this.uploadFeaturesChange(geoJsonResult);
+                  this.gxTypeEnable=false;
+                  this.$Message.success('上传成功');
+                }
             });
-            this.file = null;
-            this.loadingStatus = false;
-            this.$Message.success('Success');
+          this.file = null;
+
+
+
         },
         handleFormatError (file) {
           this.$Notice.warning({
@@ -277,7 +310,6 @@
           });
         },
         selectRow(val,index){
-            console.log(val);
           this.$store.commit('DbClickRowXmIdChange',val.xmbm);
 
         },
@@ -291,27 +323,25 @@
           this.loadingStatus=false;
           this.$Message.success('上传成功');
         },
+        //为了有自动上传的效果，action接口为假接口，默认就是上传失败。
         handleError(){
-          this.file=null;
           this.loadingStatus=false;
-          this.$Message.error('上传失败');
         },
         startAnalyze(){
             //分别去除组织好的需要传的参数
-          console.log(this.gxInfoAllStr);
           let gxInfoList=this.gxInfoAllStr.split(',');
-          console.log(gxInfoList);
           let zy=gxInfoList[0];
           let gj=gxInfoList[1];
           let ylz=gxInfoList[2];
           let msfs=gxInfoList[3];
           let gjvalue=parseInt(gxInfoList[4]);
           getAnalyzeGeometry(this.uploadGeoJsonStr,zy,gj,ylz,msfs,gjvalue).then((res)=>{
-            console.log(JSON.parse(res.data.data));
-            let geoJsonResult=JSON.parse(res.data.data);
-            this.featuresChange(geoJsonResult);
-            let conflictLinesAttr=JSON.parse(res.data.data).features.map(x=>x.properties);
-            this.gxInfoData=conflictLinesAttr;
+            if(JSON.parse(res.data.data).features){
+              let geoJsonResult=JSON.parse(res.data.data);
+              this.featuresChange(geoJsonResult);
+              this.gxInfoData=JSON.parse(res.data.data).features.map(x=>x.properties);
+            }
+
           })
 
 

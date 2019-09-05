@@ -17,6 +17,30 @@
         return {
           data: [
             {
+              title: '行政边界',
+              expand: true,
+              children:[
+                {
+                  title: '滨海新区边界',
+                  expand: true,
+                  value:'xqbj',
+                  layer:null
+                },
+                {
+                  title: '功能区边界',
+                  expand: true,
+                  value:'gnqbj',
+                  layer:null
+                },
+                {
+                  title: '街镇边界',
+                  expand: true,
+                  value:'jzbj',
+                  layer:null
+                }
+              ]
+            },
+            {
               title: '管线数据',
               expand: true,
               children: [
@@ -59,29 +83,72 @@
               ]
             },
             {
-              title: '路网',
+              title: '交通数据',
               expand: true,
               children: [
                 {
-                  title: '道路中线',
-                  expand: false,
-                  value:'dlzx',
+                  title: '规划轨道',
+                  expand: true,
+                  value: 'ghgd',
+                  layer: null
+                },
+                {
+                  title: '规划路网',
+                  expand: true,
+                  value: 'ghlw',
+                  layer: null
+                },
+
+              ]
+            },
+            {
+              title: '用地数据',
+              expand: true,
+              children:[
+                {
+                  title: '控规',
+                  expand: true,
+                  value:'kg',
                   layer:null
                 },
                 {
-                  title: '道路红线',
-                  expand: false,
-                  value:'dlhx',
+                  title: '土规',
+                  expand: true,
+                  value:'tg',
                   layer:null
                 }
               ]
             },
             {
-              title: '控规',
+              title: '河道数据',
               expand: true,
-              value:'kg',
-              layer:null
+              children:[
+                {
+                  title: '河道中心线',
+                  expand: true,
+                  value:'hdzxx',
+                  layer:null
+                },
+                {
+                  title: '河道蓝线',
+                  expand: true,
+                  value:'hdlx',
+                  layer:null
+                },
+                {
+                  title: '河道管理范围',
+                  expand: true,
+                  value:'hdglfw',
+                  layer:null
+                }
+
+              ]
+            },
+            {
+
             }
+
+
           ]
         }
       },

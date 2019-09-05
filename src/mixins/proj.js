@@ -6,7 +6,8 @@ export default {
   methods:{
     _load(){
       proj4.defs('EPSG:90', "+proj=tmerc +lat_0=39.12529722222222 +lon_0=117.1967845527778 +k=1 +x_0=99940 +y_0=300000 +ellps=krass +towgs84=15.8,-154.4,-82.3,0,0,0,0 +units=m +no_defs ");
-      proj4.defs("EPSG:4509","+proj=tmerc +lat_0=-0.000015 +lon_0=117.000013 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs");
+      // proj4.defs("EPSG:4509","+proj=tmerc +lat_0=-0.000015 +lon_0=117.000013 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs");
+      proj4.defs("EPSG:4509","+proj=tmerc +lat_0=0 +lon_0=117 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs");
       var projection90 = new Projection({
         code: 'EPSG:90',
         // extent:[93615.0703125, 236681.1875,

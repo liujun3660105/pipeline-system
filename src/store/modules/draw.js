@@ -2,7 +2,8 @@ export default {
   namespaced: true,
   state:{
     isDraw:false,
-    moduleType:''
+    moduleType:'',
+    isDrawShown:true
   },
   mutations:{
     isDrawChange(state,data){
@@ -10,6 +11,9 @@ export default {
     },
     moduleTypeChange(state,data){
       state.moduleType=data;
+    },
+    isDrawShownChange(state,data){
+      state.isDrawShown=data;
     }
 
   }

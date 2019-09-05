@@ -282,6 +282,33 @@
                   };
                   this.overlayTitle='规划数据';
                   break;
+                case 'kg':
+                  this.featureStructure={
+                    'pqmc':'片区名称',
+                    'fqmc':'分区名称',
+                    'dybh':'单元编号',
+                    'dkbh':'地块编号',
+                    'yddm':'用地代码',
+                    'ydxz':'用地性质',
+                    'ydmj':'用地面积',
+                    'rjl':'容积率',
+                    'jzmd':'建筑密度',
+                    'ldl':'绿地率',
+                    'jzxg':'建筑限高',
+                    'ssmc':'设施名称',
+                    'jsgm':'设施规模',
+                    'tzrq':'调整日期',
+                    'bz':'备注'
+                  };
+                  this.overlayTitle='控规';
+                  break;
+                case 'tg':
+                  this.featureStructure={
+                    'ghdm':'规划代码',
+                    'ghdl':'规划地类'
+                  };
+                  this.overlayTitle='土规';
+                  break;
               }
             }
         }

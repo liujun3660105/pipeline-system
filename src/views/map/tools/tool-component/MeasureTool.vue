@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a @click="startMeasurement">地图测量<span class="iconfont">&#xe960;</span></a>
+    <a @click="startMeasurement">地图测量<span class="iconfont" :class="{active:showMeasurementPane}">&#xe960;</span></a>
     <div class="measurementPane" v-show="showMeasurementPane">
       <RadioGroup class="radio" v-model="measurementType" vertical @on-change="raidoChange">
         <Radio label="LineMeasurement">
@@ -23,8 +23,6 @@
   import {Vector as VectorLayer} from 'ol/layer.js';
   import {Vector as VectorSource} from 'ol/source.js';
   import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style.js';
-  import Projection from 'ol/proj/Projection';
-  import {get} from 'ol/proj'
     export default {
         name: "MeasureTool",
       mixins: [ready],
@@ -216,16 +214,16 @@
 
         //生成线的测量表示内容
         formatLength(line){
-          // var sourceProj = this.map.getView().getProjection();
+          var sourceProj = this.map.getView().getProjection();
           // var sourceProj=new Projection('3857');
-          let lineto4326=line.clone();
-          let lineto3857=lineto4326.transform('EPSG:4326','EPSG:3857');
+          // let lineto4326=line.clone();
+          // let lineto3857=lineto4326.transform('EPSG:4326','EPSG:3857');
           // console.log(lineto3857);
           // var sourceProj=get('EPSG:3857');
-          // var length = getLength(lineto3857,{
-          //   projection:sourceProj
-          // });
-          var length=lineto3857.getLength();
+          var length = getLength(line,{
+            projection:sourceProj
+          });
+          // var length=lineto3857.getLength();
           // var length=getLength(line,{
           //   projection:sourceProj
           // });
@@ -241,13 +239,13 @@
         },
         //生成面的测量表示内容
         formatArea(polygon) {
-          // var sourceProj = this.map.getView().getProjection();
-          // var area = getArea(polygon,{
-          //   projection:sourceProj
-          // });
-          let polygon4326=polygon.clone();
-          let polygon3857=polygon4326.transform('EPSG:4326','EPSG:3857');
-          let area=polygon3857.getArea();
+          var sourceProj = this.map.getView().getProjection();
+          var area = getArea(polygon,{
+            projection:sourceProj
+          });
+          // let polygon4326=polygon.clone();
+          // let polygon3857=polygon4326.transform('EPSG:4326','EPSG:3857');
+          // let area=polygon3857.getArea();
           var output;
           if (area > 10000) {
             output = (Math.round(area / 1000000 * 100) / 100) +
@@ -300,6 +298,9 @@
   .measurementPane label, .measurementPane span{
     font-size:15px;
     color:white;
+  }
+  .active{
+    color:#2db6fb;
   }
 
 

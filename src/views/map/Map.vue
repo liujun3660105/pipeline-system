@@ -5,10 +5,9 @@
 
       </Tools>
       <Legend></Legend>
-      <!--<SpatialFilter></SpatialFilter>-->
       <DrawGeometry></DrawGeometry>
-      <ShowFeatureInfo></ShowFeatureInfo>
       <SelectFeature></SelectFeature>
+      <UploadFeature></UploadFeature>
     </div>
 
 </template>
@@ -16,35 +15,12 @@
 <script>
   import 'ol/ol.css'
   import {Map, View} from 'ol'
-  import LayerGroup from 'ol/layer/Group';
   import TileLayer from 'ol/layer/Tile'
   import ImageLayer from 'ol/layer/Image'
-  import XYZ from 'ol/source/XYZ'
-  // import TileLayer from 'ol/layer/Tile'
-  // import XYZ from 'ol/source/XYZ'
-  import OSM from 'ol/source/OSM.js'
-  import {defaults} from 'ol/control/util'
-  import Vector from 'ol/source/Vector'
-  import VectorLayer from 'ol/layer/Vector'
-  import GeoJSON from 'ol/format/GeoJSON'
   import TileWMS from 'ol/source/TileWMS'
   import ImageWMS from 'ol/source/ImageWMS'
-  import GeometryCollection from 'ol/geom/GeometryCollection';
-  import Point from 'ol/geom/Point'
-  import LineString from 'ol/geom/LineString'
-  import MultiLineString from 'ol/geom/MultiLineString'
-  import Feature from 'ol/Feature'
-  import Collection from 'ol/Collection'
-  import Cluster from 'ol/source/Cluster'
-  import VectorTileLayer from 'ol/layer/VectorTile'
-  import VectorTileSource from 'ol/source/VectorTile'
-  import TileDebug from 'ol/source/TileDebug'
-  import TileGrid from 'ol/tilegrid/TileGrid'
-  import Draw from 'ol/interaction/Draw.js';
-  import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style.js';
   import Tools from './tools'
   import {transform} from 'ol/proj'
-  import {get} from 'ol/proj/projections'
   import {defaults as defaultControls} from 'ol/control.js';
   import MousePosition from 'ol/control/MousePosition.js';
   import {createStringXY} from 'ol/coordinate.js';
@@ -53,11 +29,11 @@
   import CoordinateShown from './CoordinateShown'
   import proj from '@/mixins/proj'
   import {gcj02tobd09,gcj02towgs84} from '@/api/latlngTransform'
-
-  // import SpatialFilter from '@/views/moudle/search/spatialFilter'
-  import ShowFeatureInfo from '@/views/moudle/search/ShowFeatureInfo'
+  // import ShowFeatureInfo from '@/views/moudle/search/ShowFeatureInfo'由于与工具条GetFeatureInfo有冲突，暂时取消这个功能
   import DrawGeometry from '@/components/map/DrawGeometry'
   import SelectFeature from '@/views/moudle/search/SelectFeature'
+  import UploadFeature from '@/views/moudle/collide/UploadFeature'
+  import config from '@/config'
     export default {
       name: "Map",
       provide() {
@@ -70,12 +46,173 @@
           map: null,
           view: null,
           xyzIndex: 0,
-          themeLayers: [
+          themeLayers: [//图层显示顺序是下面的覆盖上面的
+            //增加图层：1.Map组件增加专题图层；2.store中access增加图层权限；3.getFeatureInfo增加图层属性信息
+            {
+              value:'tg',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/yd/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'yd:tg20180507',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'kg',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url:config.layerUrl+'/geoserver/yd/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'yd:kg-ysp20190613',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'ghlw',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/jt/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'jt:jt-ghlw',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'ghgd',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/jt/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'jt:jt-ghgd',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'hybj',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/ghkzx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'ghkzx:hybj',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'yjjbnt',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/ghkzx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'ghkzx:yjjbnt',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'cskfbj',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/ghkzx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'ghkzx:cskfbj',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'hx',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/ghkzx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'ghkzx:hx',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'lx',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/ghkzx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'ghkzx:lx',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'sthx',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/ghkzx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'ghkzx:sthx',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
             {
               value:'xm',
               layer:new TileLayer({
                 source:new TileWMS({
-                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
                     tiled: true,
                     "LAYERS": 'pipeline:xmline'
@@ -90,7 +227,7 @@
               value:'wt',
               layer:new TileLayer({
                 source:new TileWMS({
-                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
                     // 'FORMAT': 'jpg',
                     // 'VERSION': '1.1.1',
@@ -109,7 +246,7 @@
               value:'pc',
               layer:new ImageLayer({
                 source:new ImageWMS({
-                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
                     'FORMAT': 'image/png',
                     // 'VERSION': '1.1.1',
@@ -129,7 +266,7 @@
               value:'dh',
               layer:new ImageLayer({
                 source:new ImageWMS({
-                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
                     'FORMAT': 'image/png',
                     // 'VERSION': '1.1.1',
@@ -149,7 +286,7 @@
               value:'sy',
               layer:new ImageLayer({
                 source:new ImageWMS({
-                  url: 'http://localhost:8080/geoserver/pipeline/wms',
+                  url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
                     'FORMAT': 'image/png',
                     // 'VERSION': '1.1.1',
@@ -165,8 +302,6 @@
                 visible:false
               })
             }
-
-
           ],
           // selectedVectorLayer:{a:1},
           // selectedVectorSource:null,
@@ -206,10 +341,10 @@
       components: {
         Tools,
         Legend,
-        // SpatialFilter,
-        ShowFeatureInfo,
+        // ShowFeatureInfo,
         DrawGeometry,
         SelectFeature,
+        UploadFeature,
         CoordinateShown
       },
       mounted() {

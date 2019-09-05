@@ -7,8 +7,8 @@
         <!--<Icon type="md-resize" /> 测量-->
         <li><GetFeatureInfo></GetFeatureInfo></li>
         <li><MeasureTool></MeasureTool></li>
-        <li><Tile></Tile></li>
         <li><Magnify></Magnify></li>
+        <li><Tile></Tile></li>
         <li><FullScreen v-model="isFullScreen"></FullScreen></li>
         <!--<Icon type="md-contract" />-->
         <li><HomeView></HomeView></li>

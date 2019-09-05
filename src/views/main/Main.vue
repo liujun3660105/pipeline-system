@@ -21,7 +21,14 @@
         </Header>
         <Content >
           <Map class="mapContainer"></Map>
-          <Modal id="modal-module" ref="modal" v-model="modal1" :footer-hide=true :draggable=true :width="width" >
+          <Modal id="modal-module"
+                 ref="modal"
+                 v-model="modal1"
+                 :footer-hide=true
+                 :draggable=true
+                 :width="width"
+                 @on-ok="closeModal"
+                 @on-cancel="closeModal">
             <div slot="header" class="modal-title">{{moduleTitle}}</div>
             <keep-alive>
               <component :is="currentView"></component>
@@ -39,7 +46,7 @@
   import UserInfo from './components/userinfo'
   import {Layer,Search,Statistic,Collide,Distance,Connection} from '../moudle'
   import Map from '../map'
-  import {mapGetters} from 'vuex'
+  import {mapState,mapGetters,mapMutations} from 'vuex'
 
     export default {
         name: "Main",
@@ -59,15 +66,21 @@
           moduleList:[
           ],
           currentView:'',
-          width:''
+          width:'',
+          modal:true
         }
       },
       methods:{
+          ...mapMutations('modal',[
+            'modalStateChange'
+          ]),
         handleCollapsedChange (state) {
           this.isCollapsed = state
         },
         //Modal里
         showOperationModal(name){
+          this.closeModal();
+
           this.modal1=true;
           this.currentView=name;
           switch (name){
@@ -84,12 +97,16 @@
               this.width='700';
               break;
             case 'Distance':
-              this.width='500';
+              this.width='700';
               break;
             case 'Connection':
-              this.width='200';
+              this.width='500';
               break;
           }
+        },
+        closeModal(){
+          this.modal=!this.modal;
+          this.modalStateChange(!this.modal);
         }
       },
       computed: {
@@ -110,6 +127,9 @@
         },
         ...mapGetters([
           'getAccessModules'
+        ]),
+        ...mapState('modal',[
+          'modalState'
         ])
       },
       created() {
@@ -171,8 +191,13 @@
   color:white;
   font-size:10px;
 }
+  .ivu-modal-close i{
+    color:white;
+  }
 
-
+  /*.ivu-modal-close .ivu-icon-ios-close{*/
+    /*color:white;*/
+  /*}*/
   /*.modal-style{*/
     /*background-color:blue;*/
   /*}*/

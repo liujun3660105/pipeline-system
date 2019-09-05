@@ -66,15 +66,6 @@
               source:this.XYZSourceList[0]
             });
             this.map.addLayer(this.tileLayer);
-
-
-
-
-
-
-
-
-
             // this.tileLayer=new TileLayer({
             //   source:new XYZ({
             //     url:this.XYZTileList[this.xyzIndex]

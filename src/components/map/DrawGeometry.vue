@@ -47,17 +47,20 @@
           this.map.addLayer(this.drawVectorLayer);
         },
         ...mapMutations('draw',[
-          'isDrawChange'
+          'isDrawChange',
+          'isDrawShownChange'
         ]),
         ...mapMutations([
           'statisticGeometryChange',
-          'searchGeometryChange'
+          'searchGeometryChange',
+          'distanceGeometryChange'
         ])
       },
       computed: {
         ...mapState('draw',[
           'isDraw',
-          'moduleType'
+          'moduleType',
+          'isDrawShown'
         ])
         // getDrawEnable() {
         //   return this.$store.state.search.isDraw
@@ -65,8 +68,8 @@
       },
       watch: {
         isDraw(newDrawEnable) {
-          console.log(newDrawEnable);
           if (newDrawEnable) {
+            this.isDrawShownChange(true);//默认开启geometry显示
             this.drawVectorSource.clear();
             var draw = new Draw({
               source: this.drawVectorSource,
@@ -106,11 +109,22 @@
                 console.log('统计模块调用画图功能');
                 this.statisticGeometryChange(geometryWKT);
               }
-
+              if(this.moduleType==='distance') {
+                console.log('统计模块调用画图功能');
+                this.distanceGeometryChange(geometryWKT);
+                console.log('统计模块调用画图功能完毕')
+              }
               // this.$store.commit('isDrawChange',false);
               this.isDrawChange(false);
             });
             this.map.addInteraction(draw);
+          }
+        },
+        isDrawShown(newDrawShownEnable) {
+          console.log(newDrawShownEnable);
+          if(!newDrawShownEnable){
+            console.log('aa');
+            this.drawVectorSource.clear();
           }
         }
       }

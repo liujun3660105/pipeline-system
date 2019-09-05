@@ -10,6 +10,7 @@
   import WKT from 'ol/format/WKT'
   import GeoJSON from 'ol/format/GeoJSON'
   import GeometryCollection from 'ol/geom/GeometryCollection'
+  import {mapState} from 'vuex'
 
   export default {
       name: "SelectFeature",
@@ -39,10 +40,10 @@
             // }),
             style:new Style({
               fill: new Fill({
-                color: 'rgba(255, 255, 255, 0.2)'
+                color: 'rgba(255, 0, 0, 0.4)'
               }),
               stroke: new Stroke({
-                color: 'rgba(255, 0, 0, 0.9)',
+                color: 'rgba(255, 0, 0, 1)',
                 // lineDash: [10, 10],
                 width: 4
               }),
@@ -63,6 +64,9 @@
         },
       },
       computed: {
+        ...mapState('modal',[
+          'modalState'
+        ]),
         getSelectedFeatures(){
           return this.$store.state.search.features
           //从后端传来的数据成果有两种形式，一种是geojson数据，一种是json数据，对应后台的sql语句
@@ -78,9 +82,11 @@
         }
       },
       watch: {
+        modalState(newState){
+          this.selectedVectorSource.clear();
+        },
         //异步获取xmline表的要素数据，更改vuex中search模块的features
         getSelectedFeatures(newFeatureList){
-          console.log(newFeatureList);
           this.selectedVectorSource.clear();
           if(newFeatureList.features||newFeatureList.geometries){//如果查询的结果不为空，则进行要素显示和定位
             //collide中如果上传的文件时火星坐标系，则不需要数据库进行转换，直接读取shp文件的geojson，格式为{"type":"FeatureCollection","geometries:[{"type":"LineString","coor"}]"}
@@ -109,9 +115,9 @@
             geometries.push(feature.getGeometry());
             feature.setStyle(style);
           });
-          console.log(this.selectedFeatures);
-          let geometryCollection=new GeometryCollection(geometries);
-          this.map.getView().fit(geometryCollection.getExtent());
+          // let geometryCollection=new GeometryCollection(geometries);
+          // this.map.getView().fit(geometryCollection.getExtent());
+          //缩放到双击的要素，后来觉得用户体验不好，取消
         }
       }
     }

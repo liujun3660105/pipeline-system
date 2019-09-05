@@ -127,7 +127,7 @@ export default {
           getLayers = [
             {
               title: '管线数据',
-              expand: true,
+              expand: false,
               children: [
                 {
                   title: '普查管线',
@@ -168,28 +168,82 @@ export default {
               ]
             },
             {
-              title: '路网',
-              expand: true,
+              title: '交通',
+              expand: false,
               children: [
                 {
-                  title: '道路中线',
+                  title: '规划轨道',
                   expand: false,
-                  value: 'dlzx',
+                  value: 'ghgd',
                   layer: null
                 },
                 {
-                  title: '道路红线',
+                  title: '规划路网',
                   expand: false,
-                  value: 'dlhx',
+                  value: 'ghlw',
                   layer: null
                 }
               ]
             },
             {
-              title: '控规',
-              expand: true,
-              value: 'kg',
-              layer: null
+              title: '用地数据',
+              expand: false,
+              children:[
+                {
+                  title: '控规',
+                  expand: true,
+                  value:'kg',
+                  layer:null
+                },
+                {
+                  title: '土规',
+                  expand: true,
+                  value:'tg',
+                  layer:null
+                }
+              ]
+            },
+            {
+              title: '规划控制线',
+              expand: false,
+              children:[
+                {
+                  title: '城市黄线',
+                  expand: true,
+                  value:'hx',
+                  layer:null
+                },
+                {
+                  title: '城市绿线',
+                  expand: true,
+                  value:'lx',
+                  layer:null
+                },
+                {
+                  title: '生态红线',
+                  expand: true,
+                  value:'sthx',
+                  layer:null
+                },
+                {
+                  title: '城市开发边界',
+                  expand: true,
+                  value:'cskfbj',
+                  layer:null
+                },
+                {
+                  title: '海域边界',
+                  expand: true,
+                  value:'hybj',
+                  layer:null
+                },
+                {
+                  title: '永久基本农田',
+                  expand: true,
+                  value:'yjjbnt',
+                  layer:null
+                }
+              ]
             }
           ];
           break;
@@ -197,7 +251,7 @@ export default {
           getLayers = [
             {
               title: '管线数据',
-              expand: true,
+              expand: false,
               children: [
                 {
                   title: '普查管线',
@@ -239,7 +293,7 @@ export default {
             },
             {
               title: '路网',
-              expand: true,
+              expand: false,
               children: [
                 {
                   title: '道路中线',
@@ -262,7 +316,7 @@ export default {
           getLayers = [
             {
               title: '管线数据',
-              expand: true,
+              expand: false,
               children: [
                 {
                   title: '普查管线',
@@ -302,7 +356,7 @@ export default {
                 }
               ]
             }
-          ]
+          ];
       }
       return getLayers
 

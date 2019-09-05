@@ -91,8 +91,11 @@ export default {
   .ivu-divider-inner-text{
     color:white;
   }
+
   #app{
     overflow:hidden;
   }
+
+
 
 </style>

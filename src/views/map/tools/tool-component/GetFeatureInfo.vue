@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a @click="isGetFeatureInfo=!isGetFeatureInfo">要素查看<Icon type="ios-information-circle" size="25"></Icon></a>
+    <a @click="isGetFeatureInfo=!isGetFeatureInfo">要素查看<Icon type="ios-information-circle" size="25" :class="{active:isGetFeatureInfo}"></Icon></a>
     <PopupOverlay :position="position" :featureInfo="featureInfo" :layerType="layerType" :isShownAwait="isShownAwait" ></PopupOverlay>
   </div>
 
@@ -59,12 +59,14 @@
               }
             }
           );
-          return searchLayerList
+          return searchLayerList.reverse()//这里数组顺序颠倒，让最上面的图层先进行遍历
         },
         //Promise+递归 实现对多个专题图层的遍历，当搜索到数据后，就立即停止遍历
         setLayerIndex(layers,e){
+            console.log(layers);
 
             if(this.PromiseTimes<layers.length){
+
               let url=layers[this.PromiseTimes].getSource().getGetFeatureInfoUrl(e.coordinate, this.view.getResolution(), "EPSG:4326",{
                 INFO_FORMAT:'application/json'
               });
@@ -119,6 +121,9 @@
   .tools-ul li a{
     color:white;
     font-size:15px;
+  }
+  .active{
+    color:#2db6fb;
   }
 
 </style>
