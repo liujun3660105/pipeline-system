@@ -35,7 +35,7 @@
               url:'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}'
             });//google source
 
-            var url='http://localhost:8080/geoserver/gwc/service/tms/1.0.0/terrain%3AterrainData@EPSG%3A4326@png/';//地形图TMS服务、栅格切片
+            var url='http://192.168.1.225:8080/geoserver/gwc/service/tms/1.0.0/terrain%3AterrainData@EPSG%3A4326@png/';//地形图TMS服务、栅格切片
             var tileGird=createXYZ({
               extent: extent
               // maxZoom:14

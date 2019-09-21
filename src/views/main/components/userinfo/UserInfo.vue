@@ -40,7 +40,6 @@
         },
         logout () {
           this.handleLogOut().then(() => {
-            console.log('aaa');
             this.$router.push({
               name: 'login'
             })

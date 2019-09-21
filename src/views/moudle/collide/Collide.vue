@@ -10,7 +10,7 @@
             </i-col>
             <i-col span="6">
               <Select v-model="dataType" style="width:100px">
-                <Option v-for="item in dataTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Option v-for="item in dataTypeList" :value="item.value" :key="item.value" :disabled="item.disabled">{{ item.label }}</Option>
               </Select>
             </i-col>
           </Row>
@@ -22,7 +22,7 @@
             </i-col>
             <i-col span="6">
               <Select v-model="coorType" style="width:100px">
-                <Option v-for="item in coorTypeList" :value="item.value" :key="item.value" >{{ item.label }}</Option>
+                <Option v-for="item in coorTypeList" :value="item.value" :key="item.value"  >{{ item.label }}</Option>
               </Select>
             </i-col>
           </Row>
@@ -81,8 +81,8 @@
             dataType:'',
             coorType:'',
             dataTypeList:[
-              {value:'dwg',label:'CAD文件',format:'.dwg'},
-              {value:'shp',label:'Shp文件',format:'.shp'}
+              {value:'dwg',label:'CAD文件',disabled: true, format:'.dwg'},
+              {value:'shp',label:'Shp文件',disabled: false, format:'.shp'}
             ],
             coorTypeList:[
               {value:'TJ90',label:'天津90'},
@@ -218,7 +218,6 @@
         gxInfoAllStr(){
           var returnInfo=[];
           var gj='';
-         console.log(this.gxinfo[0]);
           switch (this.gxinfo[0]){
             case 'JS':
               gj=this.gj<=200?'<=200':'>200';
@@ -328,6 +327,7 @@
           this.loadingStatus=false;
         },
         startAnalyze(){
+            console.log('aaa');
             //分别去除组织好的需要传的参数
           let gxInfoList=this.gxInfoAllStr.split(',');
           let zy=gxInfoList[0];
@@ -336,15 +336,22 @@
           let msfs=gxInfoList[3];
           let gjvalue=parseInt(gxInfoList[4]);
           getAnalyzeGeometry(this.uploadGeoJsonStr,zy,gj,ylz,msfs,gjvalue).then((res)=>{
-            if(JSON.parse(res.data.data).features){
+            //如果上传的管线区域无物探管线，则返回的字符串是sql错误信息，不是json的字符串，无法用JSON.parse方法
+            //判断是否是json的字符串
+            if(this.isJSON(res.data.data)){
               let geoJsonResult=JSON.parse(res.data.data);
               this.featuresChange(geoJsonResult);
               this.gxInfoData=JSON.parse(res.data.data).features.map(x=>x.properties);
             }
-
           })
-
-
+        },
+        isJSON(str){
+              try {
+                var obj=JSON.parse(str);
+                return (typeof obj == 'object' && obj);
+              } catch (e) {
+                return false
+              }
 
         }
       }

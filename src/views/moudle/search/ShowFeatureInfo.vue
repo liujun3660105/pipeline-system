@@ -27,7 +27,6 @@
     methods:{
       _load(){
         this.map.on('click',(e)=>{
-          console.log(this.selectedVectorLayer);
           let features=this.map.getFeaturesAtPixel(e.pixel,{
             layerFilter:(layer)=>{
               return layer===this.selectedVectorLayer//从混合中传过来的
@@ -36,7 +35,7 @@
           });
           console.log(features);
           if(features){
-            this.showFeatureInfo(e,features[0])
+            this.showFeatureInfo(e,features[0]);
           }
         });
       },

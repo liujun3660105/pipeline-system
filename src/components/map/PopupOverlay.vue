@@ -46,7 +46,8 @@
           return {
             overlay:null,
             featureStructure:{},
-            overlayTitle:''
+            overlayTitle:'',
+            showLayerList:['pc','dh','sy','wt','xm','kg','tg']
           }
       },
       computed:{
@@ -62,6 +63,13 @@
               return '无数据'
             }
 
+          },
+          getPositionandLayerType(){
+            let object={
+              position:this.position,
+              layerType:this.layerType
+            };
+            return object;
           }
       },
       props:{
@@ -76,7 +84,7 @@
         },
         layerType:{
             type:String,
-          required:true
+            required:true
 
         },
         isShownAwait:{
@@ -100,7 +108,8 @@
             this.map.addOverlay(this.overlay);
 
           },
-        _getPosition (position){
+        _getPosition (position ){
+            //如果所点击的图层不在layerType中，则不显示popup
             if(position.length===0){
               position=undefined
             }
@@ -112,204 +121,221 @@
         }
       },
       watch:{
-          position(newPosition){
-            if(newPosition.length){
-              if(this.overlay){
-                this.overlay.setPosition(this._getPosition(newPosition));
-              }
-              else{
-                this._load();
-              }
+          //当点击图层的类型在showLayerList中，则显示popup，否则不显示popup
+        //同时监听两个变量
+          getPositionandLayerType(newObject){
+            if(this.showLayerList.includes(newObject.layerType)){
+              this.overlay.setPosition(this._getPosition(newObject.position));
             }
             else{
               this._handleClose();
             }
           },
+          // position(newPosition){
+          //
+          //   if(newPosition.length){
+          //     if(this.overlay){
+          //       this.overlay.setPosition(this._getPosition(newPosition));
+          //     }
+          //     else{
+          //       this._load();
+          //     }
+          //   }
+          //   else{
+          //     this._handleClose();
+          //   }
+          // },
         //当layerType发生变化时，调整显示的数据结构
         layerType(newValue){
             if(newValue){
-              switch (newValue){
-                case 'pc':
-                  this.featureStructure={
-                    'qsdh':'起始点号',
-                    'zzdh':'终止点号',
-                    'qsms':'起始埋深',
-                    'zzms':'终止埋深',
-                    'qsgugc':'起始管顶高程',
-                    'zzgugc':'终止管顶高程',
-                    'qsgdgc':'起始管底高程',
-                    'zzgdgc':'终止管底高程',
-                    'gxcl':'管线材料',
-                    'msfs':'埋设方式',
-                    'gj':'管径',
-                    'jsrq':'建设日期',
-                    'qsdw':'权属单位',
-                    'dlts':'电缆条数',
-                    'glts':'光缆条数',
-                    'ylz':'压力值',
-                    'zks':'总孔数',
-                    'yyks':'已用孔数',
-                    'kcdw':'勘测单位',
-                    'gxdl':'管线大类',
-                    'gxdldm':'管线大类代码',
-                    'gxyjlb':'管线亚级类别',
-                    'gxyjlbdm':'管线亚级类别代码',
-                    'gxsyzk':'管线使用状况',
-                    'xbzdm':'线标准代码',
-                    'lx':'流向',
-                    'ly':'来源',
-                    'bz':'备注'
-                  };
-                  this.overlayTitle='普查数据';
-                  break;
-                case 'dh':
-                  this.featureStructure={
-                    'qsdh':'起始点号',
-                    'zzdh':'终止点号',
-                    'qsms':'起始埋深',
-                    'zzms':'终止埋深',
-                    'qsgugc':'起始管顶高程',
-                    'zzgugc':'终止管顶高程',
-                    'qsgdgc':'起始管底高程',
-                    'zzgdgc':'终止管底高程',
-                    'gxcl':'管线材料',
-                    'msfs':'埋设方式',
-                    'gj':'管径',
-                    'jsrq':'建设日期',
-                    'qsdw':'权属单位',
-                    'dlts':'电缆条数',
-                    'glts':'光缆条数',
-                    'ylz':'压力值',
-                    'zks':'总孔数',
-                    'yyks':'已用孔数',
-                    'kcdw':'勘测单位',
-                    'gxdl':'管线大类',
-                    'gxdldm':'管线大类代码',
-                    'gxyjlb':'管线亚级类别',
-                    'gxyjlbdm':'管线亚级类别代码',
-                    'gxsyzk':'管线使用状况',
-                    'xbzdm':'线标准代码',
-                    'lx':'流向',
-                    'ly':'来源',
-                    'bz':'备注'
-                  };
-                  this.overlayTitle='调绘数据';
-                  break;
-                case 'sy':
-                  this.featureStructure={
-                    'qsdh':'起始点号',
-                    'zzdh':'终止点号',
-                    'qsms':'起始埋深',
-                    'zzms':'终止埋深',
-                    'qsgugc':'起始管顶高程',
-                    'zzgugc':'终止管顶高程',
-                    'qsgdgc':'起始管底高程',
-                    'zzgdgc':'终止管底高程',
-                    'gxcl':'管线材料',
-                    'msfs':'埋设方式',
-                    'gj':'管径',
-                    'jsrq':'建设日期',
-                    'qsdw':'权属单位',
-                    'dlts':'电缆条数',
-                    'glts':'光缆条数',
-                    'ylz':'压力值',
-                    'zks':'总孔数',
-                    'yyks':'已用孔数',
-                    'kcdw':'勘测单位',
-                    'gxdl':'管线大类',
-                    'gxdldm':'管线大类代码',
-                    'gxyjlb':'管线亚级类别',
-                    'gxyjlbdm':'管线亚级类别代码',
-                    'gxsyzk':'管线使用状况',
-                    'xbzdm':'线标准代码',
-                    'lx':'流向',
-                    'ly':'来源',
-                    'bz':'备注'
-                  };
-                  this.overlayTitle='示意数据';
-                  break;
-                case 'wt':
-                  this.featureStructure={
-                    'qsdh':'起始点号',
-                    'zzdh':'终止点号',
-                    'qsms':'起始埋深',
-                    'zzms':'终止埋深',
-                    'qsgugc':'起始管顶高程',
-                    'zzgugc':'终止管顶高程',
-                    'qsgdgc':'起始管底高程',
-                    'zzgdgc':'终止管底高程',
-                    'gxcl':'管线材料',
-                    'msfs':'埋设方式',
-                    'gj':'管径',
-                    'jsrq':'建设日期',
-                    'qsdw':'权属单位',
-                    'dlts':'电缆条数',
-                    'glts':'光缆条数',
-                    'ylz':'压力值',
-                    'zks':'总孔数',
-                    'yyks':'已用孔数',
-                    'kcdw':'勘测单位',
-                    'gxdl':'管线大类',
-                    'gxdldm':'管线大类代码',
-                    'gxyjlb':'管线亚级类别',
-                    'gxyjlbdm':'管线亚级类别代码',
-                    'gxsyzk':'管线使用状况',
-                    'xbzdm':'线标准代码',
-                    'lx':'流向',
-                    'xmbm':'项目编码',
-                    'ly':'来源',
-                    'bz':'备注'
-                  };
-                  this.overlayTitle='物探数据';
-                  break;
-                case 'xm':
-                  this.featureStructure={
-                    'gxcl':'管线材料',
-                    'msfs':'埋设方式',
-                    'gj':'管径',
-                    'dlts':'电缆条数',
-                    'glts':'光缆条数',
-                    'ylz':'压力值',
-                    'zks':'总孔数',
-                    'yyks':'已用孔数',
-                    'gxdl':'管线大类',
-                    'gxdldm':'管线大类代码',
-                    'gxyjlb':'管线亚级类别',
-                    'gxyjlbdm':'管线亚级类别代码',
-                    'xmbm':'项目编码',
-                    'ly':'来源',
-                    'bz':'备注'
-                  };
-                  this.overlayTitle='规划数据';
-                  break;
-                case 'kg':
-                  this.featureStructure={
-                    'pqmc':'片区名称',
-                    'fqmc':'分区名称',
-                    'dybh':'单元编号',
-                    'dkbh':'地块编号',
-                    'yddm':'用地代码',
-                    'ydxz':'用地性质',
-                    'ydmj':'用地面积',
-                    'rjl':'容积率',
-                    'jzmd':'建筑密度',
-                    'ldl':'绿地率',
-                    'jzxg':'建筑限高',
-                    'ssmc':'设施名称',
-                    'jsgm':'设施规模',
-                    'tzrq':'调整日期',
-                    'bz':'备注'
-                  };
-                  this.overlayTitle='控规';
-                  break;
-                case 'tg':
-                  this.featureStructure={
-                    'ghdm':'规划代码',
-                    'ghdl':'规划地类'
-                  };
-                  this.overlayTitle='土规';
-                  break;
+              if(this.showLayerList.includes(newValue)){
+                switch (newValue){
+                  case 'pc':
+                    this.featureStructure={
+                      'qsdh':'起始点号',
+                      'zzdh':'终止点号',
+                      'qsms':'起始埋深',
+                      'zzms':'终止埋深',
+                      'qsgugc':'起始管顶高程',
+                      'zzgugc':'终止管顶高程',
+                      'qsgdgc':'起始管底高程',
+                      'zzgdgc':'终止管底高程',
+                      'gxcl':'管线材料',
+                      'msfs':'埋设方式',
+                      'gj':'管径',
+                      'jsrq':'建设日期',
+                      'qsdw':'权属单位',
+                      'dlts':'电缆条数',
+                      'glts':'光缆条数',
+                      'ylz':'压力值',
+                      'zks':'总孔数',
+                      'yyks':'已用孔数',
+                      'kcdw':'勘测单位',
+                      'gxdl':'管线大类',
+                      'gxdldm':'管线大类代码',
+                      'gxyjlb':'管线亚级类别',
+                      'gxyjlbdm':'管线亚级类别代码',
+                      'gxsyzk':'管线使用状况',
+                      'xbzdm':'线标准代码',
+                      'lx':'流向',
+                      'ly':'来源',
+                      'bz':'备注'
+                    };
+                    this.overlayTitle='普查数据';
+                    break;
+                  case 'dh':
+                    this.featureStructure={
+                      'qsdh':'起始点号',
+                      'zzdh':'终止点号',
+                      'qsms':'起始埋深',
+                      'zzms':'终止埋深',
+                      'qsgugc':'起始管顶高程',
+                      'zzgugc':'终止管顶高程',
+                      'qsgdgc':'起始管底高程',
+                      'zzgdgc':'终止管底高程',
+                      'gxcl':'管线材料',
+                      'msfs':'埋设方式',
+                      'gj':'管径',
+                      'jsrq':'建设日期',
+                      'qsdw':'权属单位',
+                      'dlts':'电缆条数',
+                      'glts':'光缆条数',
+                      'ylz':'压力值',
+                      'zks':'总孔数',
+                      'yyks':'已用孔数',
+                      'kcdw':'勘测单位',
+                      'gxdl':'管线大类',
+                      'gxdldm':'管线大类代码',
+                      'gxyjlb':'管线亚级类别',
+                      'gxyjlbdm':'管线亚级类别代码',
+                      'gxsyzk':'管线使用状况',
+                      'xbzdm':'线标准代码',
+                      'lx':'流向',
+                      'ly':'来源',
+                      'bz':'备注'
+                    };
+                    this.overlayTitle='调绘数据';
+                    break;
+                  case 'sy':
+                    this.featureStructure={
+                      'qsdh':'起始点号',
+                      'zzdh':'终止点号',
+                      'qsms':'起始埋深',
+                      'zzms':'终止埋深',
+                      'qsgugc':'起始管顶高程',
+                      'zzgugc':'终止管顶高程',
+                      'qsgdgc':'起始管底高程',
+                      'zzgdgc':'终止管底高程',
+                      'gxcl':'管线材料',
+                      'msfs':'埋设方式',
+                      'gj':'管径',
+                      'jsrq':'建设日期',
+                      'qsdw':'权属单位',
+                      'dlts':'电缆条数',
+                      'glts':'光缆条数',
+                      'ylz':'压力值',
+                      'zks':'总孔数',
+                      'yyks':'已用孔数',
+                      'kcdw':'勘测单位',
+                      'gxdl':'管线大类',
+                      'gxdldm':'管线大类代码',
+                      'gxyjlb':'管线亚级类别',
+                      'gxyjlbdm':'管线亚级类别代码',
+                      'gxsyzk':'管线使用状况',
+                      'xbzdm':'线标准代码',
+                      'lx':'流向',
+                      'ly':'来源',
+                      'bz':'备注'
+                    };
+                    this.overlayTitle='示意数据';
+                    break;
+                  case 'wt':
+                    this.featureStructure={
+                      'qsdh':'起始点号',
+                      'zzdh':'终止点号',
+                      'qsms':'起始埋深',
+                      'zzms':'终止埋深',
+                      'qsgugc':'起始管顶高程',
+                      'zzgugc':'终止管顶高程',
+                      'qsgdgc':'起始管底高程',
+                      'zzgdgc':'终止管底高程',
+                      'gxcl':'管线材料',
+                      'msfs':'埋设方式',
+                      'gj':'管径',
+                      'jsrq':'建设日期',
+                      'qsdw':'权属单位',
+                      'dlts':'电缆条数',
+                      'glts':'光缆条数',
+                      'ylz':'压力值',
+                      'zks':'总孔数',
+                      'yyks':'已用孔数',
+                      'kcdw':'勘测单位',
+                      'gxdl':'管线大类',
+                      'gxdldm':'管线大类代码',
+                      'gxyjlb':'管线亚级类别',
+                      'gxyjlbdm':'管线亚级类别代码',
+                      'gxsyzk':'管线使用状况',
+                      'xbzdm':'线标准代码',
+                      'lx':'流向',
+                      'xmbm':'项目编码',
+                      'ly':'来源',
+                      'bz':'备注'
+                    };
+                    this.overlayTitle='物探数据';
+                    break;
+                  case 'xm':
+                    this.featureStructure={
+                      'gxcl':'管线材料',
+                      'msfs':'埋设方式',
+                      'gj':'管径',
+                      'dlts':'电缆条数',
+                      'glts':'光缆条数',
+                      'ylz':'压力值',
+                      'zks':'总孔数',
+                      'yyks':'已用孔数',
+                      'gxdl':'管线大类',
+                      'gxdldm':'管线大类代码',
+                      'gxyjlb':'管线亚级类别',
+                      'gxyjlbdm':'管线亚级类别代码',
+                      'xmbm':'项目编码',
+                      'ly':'来源',
+                      'bz':'备注'
+                    };
+                    this.overlayTitle='规划数据';
+                    break;
+                  case 'kg':
+                    this.featureStructure={
+                      'pqmc':'片区名称',
+                      'fqmc':'分区名称',
+                      'dybh':'单元编号',
+                      'dkbh':'地块编号',
+                      'yddm':'用地代码',
+                      'ydxz':'用地性质',
+                      'ydmj':'用地面积',
+                      'rjl':'容积率',
+                      'jzmd':'建筑密度',
+                      'ldl':'绿地率',
+                      'jzxg':'建筑限高',
+                      'ssmc':'设施名称',
+                      'jsgm':'设施规模',
+                      'tzrq':'调整日期',
+                      'bz':'备注'
+                    };
+                    this.overlayTitle='控规';
+                    break;
+                  case 'tg':
+                    this.featureStructure={
+                      'ghdm':'规划代码',
+                      'ghdl':'规划地类'
+                    };
+                    this.overlayTitle='土规';
+                    break;
+                }
               }
+              else{
+                this._handleClose ();
+              }
+
             }
         }
       }

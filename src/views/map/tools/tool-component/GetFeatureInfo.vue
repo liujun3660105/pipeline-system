@@ -63,14 +63,10 @@
         },
         //Promise+递归 实现对多个专题图层的遍历，当搜索到数据后，就立即停止遍历
         setLayerIndex(layers,e){
-            console.log(layers);
-
             if(this.PromiseTimes<layers.length){
-
               let url=layers[this.PromiseTimes].getSource().getGetFeatureInfoUrl(e.coordinate, this.view.getResolution(), "EPSG:4326",{
                 INFO_FORMAT:'application/json'
               });
-
                 this.$axios.get(url).then((data)=>{
                   if(data.data.features.length){
                     this.isShownAwait=false;//当搜索到要素的时候，异步结束，等待界面消失，显示信息框

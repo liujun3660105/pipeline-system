@@ -80,6 +80,7 @@
           ]),
         searchByKeyWord(){
           if(this.keyWordType){
+
             //修改初始值和vuex中search.js的searchParams
             this.isShownTable=true;//显示表格
             this.$store.commit('keyWordChange', {
@@ -308,10 +309,11 @@
               }
             }).then((res)=>{
               console.log(res);
+              this.$store.commit('featuresChange',res.data.data[0]);
 
-              if(res.data.data[0].features){
-                this.$store.commit('featuresChange',res.data.data[0]);
-              }
+              // if(res.data.data[0].features){
+              //   this.$store.commit('featuresChange',res.data.data[0]);
+              // }
             }).catch((err)=>{
             })
           }

@@ -126,6 +126,36 @@ export default {
         case 'admin':
           getLayers = [
             {
+              title: '行政边界',
+              expand: false,
+              children: [
+                {
+                  title: '新区行政边界',
+                  expand: true,
+                  value:'xzbj',
+                  layer:null
+                },
+                {
+                  title: '街镇',
+                  expand: true,
+                  value: 'jz',
+                  layer: null
+                },
+                {
+                  title: '功能区',
+                  expand: true,
+                  value: 'gnq',
+                  layer: null
+                },
+                {
+                  title: '双城绿廊管控分界线',
+                  expand: true,
+                  value: 'scllgkfjx',
+                  layer: null
+                }
+              ]
+            },
+            {
               title: '管线数据',
               expand: false,
               children: [
@@ -226,6 +256,12 @@ export default {
                   layer:null
                 },
                 {
+                  title: '河道蓝线',
+                  expand: true,
+                  value:'hdlx',
+                  layer:null
+                },
+                {
                   title: '城市开发边界',
                   expand: true,
                   value:'cskfbj',
@@ -292,23 +328,23 @@ export default {
               ]
             },
             {
-              title: '路网',
+              title: '交通',
               expand: false,
               children: [
                 {
-                  title: '道路中线',
+                  title: '规划轨道',
                   expand: false,
-                  value: 'dlzx',
+                  value: 'ghgd',
                   layer: null
                 },
                 {
-                  title: '道路红线',
+                  title: '规划路网',
                   expand: false,
-                  value: 'dlhx',
+                  value: 'ghlw',
                   layer: null
                 }
               ]
-            },
+            }
 
           ];
           break;

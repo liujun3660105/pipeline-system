@@ -102,17 +102,13 @@
               // this.$store.commit('geometryChange',geometryWKT);
               //从draw.js传过来的值 来判断是哪个模块调用画图供能
               if(this.moduleType==='search'){
-                console.log('查询模块调用画图功能');
                 this.searchGeometryChange(geometryWKT);
               }
               if(this.moduleType==='statistic'){
-                console.log('统计模块调用画图功能');
                 this.statisticGeometryChange(geometryWKT);
               }
               if(this.moduleType==='distance') {
-                console.log('统计模块调用画图功能');
                 this.distanceGeometryChange(geometryWKT);
-                console.log('统计模块调用画图功能完毕')
               }
               // this.$store.commit('isDrawChange',false);
               this.isDrawChange(false);
@@ -121,9 +117,7 @@
           }
         },
         isDrawShown(newDrawShownEnable) {
-          console.log(newDrawShownEnable);
           if(!newDrawShownEnable){
-            console.log('aa');
             this.drawVectorSource.clear();
           }
         }

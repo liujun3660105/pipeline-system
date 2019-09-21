@@ -15,8 +15,8 @@
           <Select v-model="dataType" style="width:200px">
             <Option v-for="item in dataTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
-          <Button  icon="ios-search" @click="searchByPolygon" style="margin-left:50px;">搜索</Button>
-          <span style="color:burlywood;font-size:15px;">通过自定义面进行统计{{piePcData[0].value}}</span>
+          <Button  icon="ios-search" @click="searchByPolygon" style="margin-left:50px;">画面统计</Button>
+          <span style="color: #BBFFFF;font-size:15px;">通过自定义面进行统计</span>
         </i-col>
       </Row>
       <!--v-if="isShownChart"-->

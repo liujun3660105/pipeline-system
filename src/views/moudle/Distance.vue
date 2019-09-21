@@ -26,6 +26,8 @@
   import {getUploadGeometry,getAnalyzeGeometry} from '@/api/collide'
   import {mapState,mapMutations} from 'vuex'
   import {getPolygonbydraw} from '@/api/distance'
+  import WKT from 'ol/format/WKT'
+  import GeoJSON from 'ol/format/GeoJSON'
   export default {
     name: "Collide",
     data(){
@@ -180,8 +182,20 @@
         getPolygonbydraw(newGeomWKT,zy,gj,ylz,msfs,gjvalue).then((res)=>{
           if(JSON.parse(res.data.data).features){
             let geoJsonResult=JSON.parse(res.data.data);
+            console.log(geoJsonResult);
             this.featuresChange(geoJsonResult);
             this.isDrawShownChange(false);
+          }
+          else{
+            //当画的图形下面没有管线，应该直接返回所化图形，后台却直接返回为空
+            //这里将wkt数据直接转换为geojson
+            let wktnull = new WKT();
+            let drawGeometrywkt = wktnull.readFeatures(newGeomWKT);
+            let geojsonnull = new GeoJSON();
+            let drawGeometryJson=geojsonnull.writeFeatures(drawGeometrywkt);
+            this.featuresChange(JSON.parse(drawGeometryJson));
+            this.isDrawShownChange(false);
+
           }
           // this.gxInfoData=JSON.parse(res.data.data).features.map(x=>x.properties);
         })

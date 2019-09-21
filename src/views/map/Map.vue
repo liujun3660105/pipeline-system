@@ -49,6 +49,70 @@
           themeLayers: [//图层显示顺序是下面的覆盖上面的
             //增加图层：1.Map组件增加专题图层；2.store中access增加图层权限；3.getFeatureInfo增加图层属性信息
             {
+              value:'xzbj',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/xzjx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'xzjx:xzjx',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'jz',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/xzjx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'xzjx:jz',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'gnq',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/xzjx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'xzjx:gnq',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'scllgkfjx',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/ghkzx/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'ghkzx:scllgkfjx',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
               value:'tg',
               layer:new TileLayer({
                 source:new TileWMS({
@@ -200,6 +264,22 @@
                   params: {'FORMAT': 'image/png',
                     'VERSION': '1.1.1',
                     "LAYERS": 'ghkzx:sthx',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+                  projection:'EPSG:4326'
+                }),
+                zIndex:2,
+                visible:false
+              })
+            },
+            {
+              value:'hdlx',
+              layer:new TileLayer({
+                source:new TileWMS({
+                  url: config.layerUrl+'/geoserver/hd/wms',
+                  params: {'FORMAT': 'image/png',
+                    'VERSION': '1.1.1',
+                    "LAYERS": 'hd:hd-hdlx',
                     "exceptions": 'application/vnd.ogc.se_inimage',
                   },
                   projection:'EPSG:4326'
