@@ -44,11 +44,14 @@
         //20190529测试普查数据量大，getFeagureInfoUrl耗时较长，所以在Map.vue中，将普查数据放在最后，当点击别的图层时，如果查到要素，不会继续遍历剩余图层，减少耗时
         getShownWMSLayer(){
           var wmsLayerList=this.map.getLayers();
+          console.log(wmsLayerList);
           var searchLayerList=[];
           wmsLayerList.getArray().forEach((wmsLayer,index)=>{
             //wms服务有可能是imagewms或者tilewms，不同的source，得到url的方法是不一样的，这里分别进行判断
               if(wmsLayer.type==='TILE'){
-                if(wmsLayer.getSource().getUrls()[0].search("wms")>0&&wmsLayer.getVisible()){
+                //通过调试发现地形图的source的url为null,所以getUrls()[0]方法不适用，会报错
+                let url = wmsLayer.getSource().urls instanceof Array ? wmsLayer.getSource().urls[0] : '';
+                if(url.search("wms")>0&&wmsLayer.getVisible()){
                   searchLayerList.push(wmsLayer)
                 }
               }
@@ -71,7 +74,6 @@
                   if(data.data.features.length){
                     this.isShownAwait=false;//当搜索到要素的时候，异步结束，等待界面消失，显示信息框
                     this.featureInfo=data.data.features[0].properties;
-                    console.log(this.featureInfo);
                     var layerIndex=this.themeLayers.findIndex((val,index)=>{
                       return val.layer===layers[this.PromiseTimes]
                     });

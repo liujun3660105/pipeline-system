@@ -6,6 +6,7 @@ import iView from 'iview'
 import {getToken, setToken} from "../api/user";
 Vue.use(Router)
 const router=new Router({
+  base:'/pipeline-system',
   mode:'history',
   routes: [
     {

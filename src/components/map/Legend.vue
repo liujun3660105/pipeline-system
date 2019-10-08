@@ -16,6 +16,7 @@
 </template>
 
 <script>
+  import config from '@/config'
     export default {
         name: "Legend",
       data(){
@@ -23,7 +24,7 @@
             legendShow:false,
             legendIcon:"&#xe6a2;",
             isActive:false,
-            legendImgUrl:'http://localhost:8080/geoserver/pipeline/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=100&HEIGHT=40&LAYER=pipeline:prospectlinegcj&LEGEND_OPTIONS=bgColor:0xFFFFFF'
+            legendImgUrl:config.layerUrl+'/geoserver/pipeline/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=100&HEIGHT=40&LAYER=pipeline:prospectlinegcj&LEGEND_OPTIONS=bgColor:0xFFFFFF'
           }
       },
       methods:{

@@ -180,6 +180,7 @@
         let msfs=gxInfoList[3];
         let gjvalue=parseInt(gxInfoList[4]);
         getPolygonbydraw(newGeomWKT,zy,gj,ylz,msfs,gjvalue).then((res)=>{
+          console.log(res);
           if(JSON.parse(res.data.data).features){
             let geoJsonResult=JSON.parse(res.data.data);
             console.log(geoJsonResult);

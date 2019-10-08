@@ -464,7 +464,7 @@
           //设置map
           this.map = new Map({
             target: 'map',
-            controls: defaultControls().extend([mousePositionControl]),
+            controls: defaultControls(),
             interactions: defaultInteractions().extend([
               new DragRotateAndZoom()
             ]),

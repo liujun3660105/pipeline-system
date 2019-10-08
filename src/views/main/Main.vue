@@ -80,7 +80,6 @@
         //Modal里
         showOperationModal(name){
           this.closeModal();
-
           this.modal1=true;
           this.currentView=name;
           switch (name){
