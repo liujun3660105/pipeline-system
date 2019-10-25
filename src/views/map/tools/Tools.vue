@@ -28,7 +28,7 @@
         MeasureTool,
         HomeView,
         Magnify,
-        GetFeatureInfo
+        GetFeatureInfo,
       },
       data(){
           return {

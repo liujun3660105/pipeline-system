@@ -46,11 +46,17 @@ export default {
               name: 'Distance',
               icon: 'md-pause'
             },
+            // {
+            //   id: 6,
+            //   title: '连通分析',
+            //   name: 'Connection',
+            //   icon: 'logo-steam'
+            // },
             {
-              id: 6,
-              title: '连通分析',
-              name: 'Connection',
-              icon: 'logo-steam'
+              id: 7,
+              title: '文件上传',
+              name: 'UploadFile',
+              icon: 'ios-cloud-upload'
             }
           ];
           break;

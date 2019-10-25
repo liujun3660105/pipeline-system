@@ -1,6 +1,6 @@
 <template>
   <div class="collide">
-    <Row :gutter="50" class="item-row">
+    <Row :gutter="0" class="item-row">
       <i-col span="8" class="gxinfo-col">
           <span class="gxinfo-title">
             请选择管线类别

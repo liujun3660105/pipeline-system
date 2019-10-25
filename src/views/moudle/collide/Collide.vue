@@ -1,6 +1,6 @@
 <template>
     <div class="collide">
-      <Row :gutter="50" class="item-row">
+      <Row :gutter="0" class="item-row">
         <i-col span="12">
           <Row class="item-item-row" >
             <i-col span="18">
@@ -46,7 +46,7 @@
         </i-col>
 
       </Row>
-      <Row :gutter="50" class="item-row">
+      <Row :gutter="0" class="item-row">
         <i-col span="8" class="gxinfo-col">
           <span class="gxinfo-title">
             请选择管线类别
@@ -327,7 +327,7 @@
           this.loadingStatus=false;
         },
         startAnalyze(){
-            console.log('aaa');
+            console.log(this.uploadGeoJsonStr,'aaa');
             //分别去除组织好的需要传的参数
           let gxInfoList=this.gxInfoAllStr.split(',');
           let zy=gxInfoList[0];

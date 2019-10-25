@@ -6,7 +6,6 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import App from './App'
 import store from './store'
-// import  from "axios";
 import axios from './api/axios'
 
 Vue.prototype.$axios=axios;

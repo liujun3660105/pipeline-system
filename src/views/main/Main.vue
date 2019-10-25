@@ -44,7 +44,7 @@
   import HeaderBar from './components/header-bar'
   import FullScreen from './components/fullscreen'
   import UserInfo from './components/userinfo'
-  import {Layer,Search,Statistic,Collide,Distance,Connection} from '../moudle'
+  import {Layer,Search,Statistic,Collide,Distance,Connection,UploadFile} from '../moudle'
   import Map from '../map'
   import {mapState,mapGetters,mapMutations} from 'vuex'
 
@@ -54,7 +54,7 @@
         HeaderBar,
         FullScreen,
         UserInfo,
-        Layer, Search,Statistic,Collide,Distance,Connection,
+        Layer, Search,Statistic,Collide,Distance,Connection,UploadFile,
         Map
       },
       data(){
@@ -100,6 +100,9 @@
               break;
             case 'Connection':
               this.width='500';
+              break;
+            case 'UploadFile':
+              this.width = '700';
               break;
           }
         },

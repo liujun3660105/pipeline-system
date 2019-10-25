@@ -44,7 +44,6 @@
         //20190529测试普查数据量大，getFeagureInfoUrl耗时较长，所以在Map.vue中，将普查数据放在最后，当点击别的图层时，如果查到要素，不会继续遍历剩余图层，减少耗时
         getShownWMSLayer(){
           var wmsLayerList=this.map.getLayers();
-          console.log(wmsLayerList);
           var searchLayerList=[];
           wmsLayerList.getArray().forEach((wmsLayer,index)=>{
             //wms服务有可能是imagewms或者tilewms，不同的source，得到url的方法是不一样的，这里分别进行判断

@@ -48,12 +48,15 @@
     watch: {
       //异步获取xmline表的要素数据，更改vuex中search模块的features
       uploadFeatures(newFeatureList){
+        console.log(newFeatureList);
+
         this.uploadVectorSource.clear();
         if(newFeatureList.features||newFeatureList.geometries){//如果查询的结果不为空，则进行要素显示和定位
           //collide中如果上传的文件时火星坐标系，则不需要数据库进行转换，直接读取shp文件的geojson，格式为{"type":"FeatureCollection","geometries:[{"type":"LineString","coor"}]"}
           let uploadFeatures=new GeoJSON().readFeatures(newFeatureList);
           this.uploadVectorSource.addFeatures(uploadFeatures);
           this.map.getView().fit(this.uploadVectorSource.getExtent());
+
         }
       },
       modalState(newState){

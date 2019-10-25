@@ -8,6 +8,7 @@
       <DrawGeometry></DrawGeometry>
       <SelectFeature></SelectFeature>
       <UploadFeature></UploadFeature>
+      <ShowUploadFile></ShowUploadFile>
     </div>
 
 </template>
@@ -33,6 +34,7 @@
   import DrawGeometry from '@/components/map/DrawGeometry'
   import SelectFeature from '@/views/moudle/search/SelectFeature'
   import UploadFeature from '@/views/moudle/collide/UploadFeature'
+  import ShowUploadFile from '../../views/moudle/uploadfile/ShowUploadFile'
   import config from '@/config'
     export default {
       name: "Map",
@@ -46,7 +48,8 @@
           map: null,
           view: null,
           xyzIndex: 0,
-          themeLayers: [//图层显示顺序是下面的覆盖上面的
+          themeLayers: [
+            //图层显示顺序是下面的覆盖上面的
             //增加图层：1.Map组件增加专题图层；2.store中access增加图层权限；3.getFeatureInfo增加图层属性信息
             {
               value:'xzbj',
@@ -425,7 +428,8 @@
         DrawGeometry,
         SelectFeature,
         UploadFeature,
-        CoordinateShown
+        CoordinateShown,
+        ShowUploadFile
       },
       mounted() {
         this.initMap();

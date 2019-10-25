@@ -32,7 +32,6 @@
         },
         mousemoveEvent(e){
           this.mousePosition = this.map.getEventPixel(e);
-          console.log(this.mousePosition);
           this.map.render(this.mousePosition);
         }
       },
