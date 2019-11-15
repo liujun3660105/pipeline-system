@@ -21,14 +21,16 @@
         </Header>
         <Content >
           <Map class="mapContainer"></Map>
+          <!--@on-ok="closeModal"-->
+          <!--调整关闭或者切换modal时清除所有要素-->
+          <!--@on-cancel="closeModal"-->
           <Modal id="modal-module"
                  ref="modal"
                  v-model="modal1"
                  :footer-hide=true
                  :draggable=true
                  :width="width"
-                 @on-ok="closeModal"
-                 @on-cancel="closeModal">
+          >
             <div slot="header" class="modal-title">{{moduleTitle}}</div>
             <keep-alive>
               <component :is="currentView"></component>
@@ -79,7 +81,7 @@
         },
         //Modal里
         showOperationModal(name){
-          this.closeModal();
+          // this.closeModal();调整关闭或者切换modal时清除所有要素
           this.modal1=true;
           this.currentView=name;
           switch (name){

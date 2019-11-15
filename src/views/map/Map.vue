@@ -533,10 +533,10 @@
           if (e.coordinate && e.coordinate.length) {
             switch (this.coorType){
               case 'CGCS2000':
-                this.coordinateArray = transform(e.coordinate, 'EPSG:4326', 'EPSG:4509');
+                this.coordinateArray = transform(gcj02towgs84(e.coordinate[0],e.coordinate[1]), 'EPSG:4326', 'EPSG:4509');
                 break;
               case 'TJ90':
-                this.coordinateArray = transform(e.coordinate, 'EPSG:4326', 'EPSG:90');
+                this.coordinateArray = transform(gcj02towgs84(e.coordinate[0],e.coordinate[1]), 'EPSG:4326', 'EPSG:90');
                 break;
               case 'WGS84':
                 this.coordinateArray = gcj02towgs84(e.coordinate[0],e.coordinate[1]);

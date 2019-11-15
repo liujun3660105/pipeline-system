@@ -207,7 +207,6 @@
             else{
               item.count=0;
             }
-            console.log(item.count);
           })
         },
           getChartInitData(geom,dataType){
@@ -231,7 +230,6 @@
               //规划专业数量
               let geXmCountbyZy=res.data.data.xm.zycount;
               this.searchXmCountObject(this.barGhData,geXmCountbyZy);
-              console.log(this.barGhData);
 
 
             })
@@ -267,7 +265,6 @@
       watch:{
         geomWKT(newGeomWKT){
           this.isShownChart=false;//刚画完图形，图标隐藏，显示等待
-          console.log(newGeomWKT);
           getChartInitData(newGeomWKT,this.dataType).then(res=>{
             this.isShownChart=true;//查询完成后，图表显示
             switch(this.dataType){
@@ -333,7 +330,6 @@
                     ]
                 }
                 else{
-                  console.log(geWtDatabyLy,'物探来源数据');
                   this.searchObject(this.pieWtInnerData,geWtDatabyLy);
                 }
 

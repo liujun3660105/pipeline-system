@@ -75,11 +75,10 @@
             })
           }),
           'Polygon': new Style({
-            // stroke: new Stroke({
-            //   color: 'rgb('+color+')',
-            //   lineDash: [4],
-            //   width: 3
-            // }),
+            stroke: new Stroke({
+              color: 'rgb('+color+')',
+              width: 1
+            }),
             fill: new Fill({
               color: 'rgb('+color+')'
             })

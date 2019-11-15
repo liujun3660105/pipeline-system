@@ -4,5 +4,6 @@ import MeasureTool from './MeasureTool'
 import Tile from './Tile'
 import Magnify from './Magnify'
 import GetFeatureInfo from './GetFeatureInfo'
+import ClearGeometry from './ClearGeometry'
 
-export {FullScreen,HomeView,MeasureTool,Tile,Magnify,GetFeatureInfo}
+export {FullScreen,HomeView,MeasureTool,Tile,Magnify,GetFeatureInfo,ClearGeometry}

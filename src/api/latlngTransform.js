@@ -88,6 +88,7 @@ function gcj02towgs84(lng, lat) {
     dlng = (dlng * 180.0) / (a / sqrtmagic * Math.cos(radlat) * PI);
     var mglat = lat + dlat;
     var mglng = lng + dlng;
+
     return [lng * 2 - mglng, lat * 2 - mglat]
   }
 }

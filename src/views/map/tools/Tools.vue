@@ -12,6 +12,7 @@
         <li><FullScreen v-model="isFullScreen"></FullScreen></li>
         <!--<Icon type="md-contract" />-->
         <li><HomeView></HomeView></li>
+        <li><ClearGeometry></ClearGeometry></li>
       </ul>
 
 
@@ -19,7 +20,7 @@
 </template>
 
 <script>
-  import {FullScreen,Tile,MeasureTool,HomeView,Magnify,GetFeatureInfo} from './tool-component'
+  import {FullScreen,Tile,MeasureTool,HomeView,Magnify,GetFeatureInfo,ClearGeometry} from './tool-component'
     export default {
         name: "Tools",
       components:{
@@ -29,6 +30,7 @@
         HomeView,
         Magnify,
         GetFeatureInfo,
+        ClearGeometry
       },
       data(){
           return {
@@ -60,7 +62,7 @@
 <style scoped>
 
   .tools{
-    width:500px;
+    width:570px;
     height:50px;
     background:rgba(0,0,0,0.5);
     border-radius:15px;

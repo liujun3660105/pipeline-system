@@ -138,6 +138,9 @@
         let params = this.dataType === 'dwg'? CADparams : SHPparams;
 
         FMEServer.runDataStreaming(this.repository, this.workspace, params, (json)=>{
+          if(typeof json === 'string'){
+            json = JSON.parse(json);
+          }
           // document.getElementById('file-upload').outerHTML = document.getElementById('file-upload').outerHTML;
           this.spinShown = false;//关闭等待界面
           document.getElementById('file-upload').value = '';
@@ -148,7 +151,6 @@
       //上传文件到FMEServer
       uploadFiles(e){
         this.uploadButtonShown=false;
-        console.log(e.target.files.length);
         if(e.target.files.length>0){
           let fileSize =e.target.files[0].size;
           if(fileSize>1*1024*1024){
