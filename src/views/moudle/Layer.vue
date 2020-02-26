@@ -22,19 +22,16 @@
               children:[
                 {
                   title: '滨海新区边界',
-                  expand: true,
                   value:'xqbj',
                   layer:null
                 },
                 {
                   title: '功能区边界',
-                  expand: true,
                   value:'gnqbj',
                   layer:null
                 },
                 {
                   title: '街镇边界',
-                  expand: true,
                   value:'jzbj',
                   layer:null
                 }
@@ -42,27 +39,24 @@
             },
             {
               title: '管线数据',
-              expand: true,
+              expand: false,
               children: [
                 {
                   title: '普查管线',
-                  expand: true,
+                  expand: false,
                   children:[
                     {
                       title: '普查',
-                      expand: true,
                       value:'pc',
                       layer:null
                     },
                     {
                       title: '调绘',
-                      expand: true,
                       value:'dh',
                       layer:null
                     },
                     {
                       title: '示意',
-                      expand: true,
                       value:'sy',
                       layer:null
                     }
@@ -70,13 +64,11 @@
                 },
                 {
                   title: '物探管线',
-                  expand: true,
                   value:'wt',
                   layer:null
                 },
                 {
                   title: '规划管线',
-                  expand: true,
                   value:'xm',
                   layer:null
                 }

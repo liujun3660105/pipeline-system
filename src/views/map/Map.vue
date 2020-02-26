@@ -36,6 +36,7 @@
   import UploadFeature from '@/views/moudle/collide/UploadFeature'
   import ShowUploadFile from '../../views/moudle/uploadfile/ShowUploadFile'
   import config from '@/config'
+  import {mapState,mapMutations} from 'vuex'
     export default {
       name: "Map",
       provide() {
@@ -294,6 +295,7 @@
             {
               value:'xm',
               layer:new TileLayer({
+                name:'xm',
                 source:new TileWMS({
                   url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
@@ -309,14 +311,14 @@
             {
               value:'wt',
               layer:new TileLayer({
+                name:'wt',
                 source:new TileWMS({
                   url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
                     // 'FORMAT': 'jpg',
                     // 'VERSION': '1.1.1',
                     tiled: true,
-                    "LAYERS": 'pipeline:prospectData',
-                    // "exceptions": 'application/vnd.ogc.se_inimage'
+                    "LAYERS": 'pipeline:prospectData'
                     // tilesOrigin: 93615.0703125 + "," + 236681.1875,
                   },
                   projection:'EPSG:4326'
@@ -328,6 +330,7 @@
             {
               value:'pc',
               layer:new ImageLayer({
+                name:'pc',
                 source:new ImageWMS({
                   url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
@@ -348,6 +351,7 @@
             {
               value:'dh',
               layer:new ImageLayer({
+                name:'dh',
                 source:new ImageWMS({
                   url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
@@ -368,6 +372,7 @@
             {
               value:'sy',
               layer:new ImageLayer({
+                name:'sy',
                 source:new ImageWMS({
                   url: config.layerUrl+'/geoserver/pipeline/wms',
                   params: {
@@ -390,12 +395,17 @@
           // selectedVectorSource:null,
           selectedFeatures:[],
           coordinateArray:[],
-          coorType:''
+          coorType:'',
+          filterStr:""//管线图层类过滤信息
+
         }
 
       },
       mixins:[proj],
       computed: {
+        ...mapState('legend',[
+          'selectedList'
+        ]),
         //得到layer传过来的图层
         getSelectedLayers() {
           return this.$store.state.layer.layers;
@@ -460,6 +470,7 @@
 
 
           //设置鼠标移动时显示坐标值得控件
+
           var mousePositionControl = new MousePosition({
             coordinateFormat: createStringXY(4),
             projection: 'EPSG:4326'
@@ -613,6 +624,38 @@
         //   this.map.getView().fit(geometryCollection.getExtent());
         // }
 
+        /**
+         * 每当触发Legend的开关按钮
+         * newSeletedList ['PS','JS','ZS']
+         *   
+         */
+      selectedList(newSeletedList){
+        //对返回过来的数组 拼接过滤字符串
+        this.filterStr = newSeletedList.map((item)=>{
+          return "gxdldm="+"'"+item+"'"
+        }).join(" OR ");
+        //过滤地图上所有图层，进行更新source之前，先对多有图层进行筛选，只对wt pc dh sy图层进行操作
+        this.map.getLayers().getArray().filter((layer)=>{
+          return ['wt', 'pc', 'dh', 'sy','xm'].includes(layer.getProperties().name);
+        }).forEach((layer)=>{
+          //遍历筛选出的这四个图层，由于wt和其它三个图层在过滤字符串上 不一样，所以区别对待
+          let filterStr = '';
+          if(layer.getProperties().name=='wt' || layer.getProperties().name=='xm'){
+            filterStr = this.filterStr;
+          }
+          else{
+            let preFilterStr = layer.getSource().getParams()["CQL_FILTER"];
+            let indexAND = preFilterStr.indexOf(" AND ");
+            let subStr =indexAND===-1?preFilterStr: preFilterStr.slice(0,indexAND);
+            filterStr = subStr+" AND "+"("+this.filterStr+")";
+          }
+          layer.getSource().updateParams({
+            "CQL_FILTER":filterStr
+          });
+          layer.getSource().refresh();//没有这一句也可以实现，但是在切换的时候，容易出现聚簇现象(防止地图上出现聚簇现象)
+        })
+
+      }
       }
     }
 </script>

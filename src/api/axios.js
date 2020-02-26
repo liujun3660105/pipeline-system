@@ -1,6 +1,8 @@
 import Axios from 'axios'
 //接口地址前缀
 Axios.defaults.baseURL ='http://192.168.1.225:5000';
+// Axios.defaults.baseURL ='http://localhost:5000';
+
 //请求拦截器
 Axios.interceptors.request.use((config)=>{
   return config;

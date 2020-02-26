@@ -7,6 +7,7 @@ import 'iview/dist/styles/iview.css';
 import App from './App'
 import store from './store'
 import axios from './api/axios'
+import 'babel-polyfill'
 
 Vue.prototype.$axios=axios;
 Vue.use(iView);

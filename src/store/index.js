@@ -10,6 +10,7 @@ import draw from './modules/draw'
 import collide from './modules/collide'
 import modal from './modules/modal'
 import upload from './modules/upload'
+import legend from './modules/legend'
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
@@ -30,6 +31,7 @@ export default new Vuex.Store({
     distance,
     collide,
     modal,
-    upload
+    upload,
+    legend
   }
 })

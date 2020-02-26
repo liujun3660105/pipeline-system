@@ -23,7 +23,7 @@
         </div>
         <div v-else>
           <ul>
-            <li v-for="(value,key,index) in getShownObject">
+            <li v-for="(value,key,index) in getShownObject" :key="index">
               <span>{{key}}:</span>
               <span>{{value}}</span>
             </li>
