@@ -7,15 +7,15 @@
 
 <script>
   import ready from '@/mixins/ready';
+  import { transform } from "ol/proj";
     export default {
         name: "HomeView",
       mixins: [ready],
       methods:{
           _load(){},
           toHomeView(){
-            this.view.setCenter([117.7,39]);
-            this.view.setZoom(12);
-
+            this.view.setCenter(transform([117.7, 39],'EPSG:4326','EPSG:3857'));
+            this.view.setZoom(11);
           }
       }
     }

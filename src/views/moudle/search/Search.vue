@@ -294,7 +294,6 @@
                 keyWordType: this.keyWordType
               }
             }).then((res)=>{
-              console.log(res.data.data);
               this.isShownTableContent=true;
               this.xmInfo=res.data.data;
             }).catch((err)=>{
@@ -308,7 +307,6 @@
                 keyWordType:this.keyWordType
               }
             }).then((res)=>{
-              console.log(res);
               this.$store.commit('featuresChange',res.data.data[0]);
 
               // if(res.data.data[0].features){

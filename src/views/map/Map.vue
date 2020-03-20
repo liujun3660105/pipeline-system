@@ -155,6 +155,23 @@ export default {
           })
         },
         {
+          value: "tdlyxz",
+          layer: new TileLayer({
+            source: new TileWMS({
+              url: config.layerUrl + "/geoserver/yd/wms",
+              params: {
+                FORMAT: "image/png",
+                VERSION: "1.1.1",
+                LAYERS: "yd:tdlyxz",
+                exceptions: "application/vnd.ogc.se_inimage"
+              },
+              projection: "EPSG:4326"
+            }),
+            zIndex: 2,
+            visible: false
+          })
+        },
+        {
           value: "ghlw",
           layer: new TileLayer({
             source: new TileWMS({
@@ -342,9 +359,9 @@ export default {
         },
         {
           value: "pc",
-          layer: new ImageLayer({
+          layer: new TileLayer({
             name: "pc",
-            source: new ImageWMS({
+            source: new TileWMS({
               url: config.layerUrl + "/geoserver/pipeline/wms",
               params: {
                 FORMAT: "image/png",
@@ -363,9 +380,9 @@ export default {
         },
         {
           value: "dh",
-          layer: new ImageLayer({
+          layer: new TileLayer({
             name: "dh",
-            source: new ImageWMS({
+            source: new TileWMS({
               url: config.layerUrl + "/geoserver/pipeline/wms",
               params: {
                 FORMAT: "image/png",
@@ -384,9 +401,9 @@ export default {
         },
         {
           value: "sy",
-          layer: new ImageLayer({
+          layer: new TileLayer({
             name: "sy",
-            source: new ImageWMS({
+            source: new TileWMS({
               url: config.layerUrl + "/geoserver/pipeline/wms",
               params: {
                 FORMAT: "image/png",
@@ -470,10 +487,10 @@ export default {
       //设置视图
       this.view = new View({
         zoom: 12,
-        center: [117.7, 39],
-        projection: "EPSG:4326",
-        extent: extent,
-        minZoom: 11
+        center: transform([117.7, 39], "EPSG:4326", "EPSG:3857"),
+        projection: "EPSG:3857",
+        // extent: extent,
+        minZoom: 10
       });
 
       //设置鼠标移动时显示坐标值得控件
@@ -546,35 +563,30 @@ export default {
     },
     handleCoorType(e) {
       if (e.coordinate && e.coordinate.length) {
+        let coordinate = transform(e.coordinate, "EPSG:3857", "EPSG:4326");
         switch (this.coorType) {
           case "CGCS2000":
             this.coordinateArray = transform(
-              gcj02towgs84(e.coordinate[0], e.coordinate[1]),
+              gcj02towgs84(coordinate[0], coordinate[1]),
               "EPSG:4326",
               "EPSG:4509"
             );
             break;
           case "TJ90":
             this.coordinateArray = transform(
-              gcj02towgs84(e.coordinate[0], e.coordinate[1]),
+              gcj02towgs84(coordinate[0], coordinate[1]),
               "EPSG:4326",
               "EPSG:90"
             );
             break;
           case "WGS84":
-            this.coordinateArray = gcj02towgs84(
-              e.coordinate[0],
-              e.coordinate[1]
-            );
+            this.coordinateArray = gcj02towgs84(coordinate[0], coordinate[1]);
             break;
           case "GCJ-02":
-            this.coordinateArray = e.coordinate;
+            this.coordinateArray = coordinate;
             break;
           case "BD09":
-            this.coordinateArray = gcj02tobd09(
-              e.coordinate[0],
-              e.coordinate[1]
-            );
+            this.coordinateArray = gcj02tobd09(coordinate[0], coordinate[1]);
             break;
         }
       }

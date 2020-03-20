@@ -98,7 +98,7 @@
               this.map.removeInteraction(draw);
               //把画的几何图形转换成WKT格式
               let wkt=new WKT();
-              let geometryWKT=wkt.writeGeometryText(evt.feature.getGeometry());
+              let geometryWKT=wkt.writeGeometryText(evt.feature.getGeometry().transform('EPSG:3857','EPSG:4326'));
               // this.$store.commit('geometryChange',geometryWKT);
               //从draw.js传过来的值 来判断是哪个模块调用画图供能
               if(this.moduleType==='search'){

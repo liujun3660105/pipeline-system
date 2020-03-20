@@ -11,6 +11,7 @@
   import GeoJSON from 'ol/format/GeoJSON'
   import GeometryCollection from 'ol/geom/GeometryCollection'
   import {mapState} from 'vuex'
+  import featureTransform from '@/util/featureTransform'
 
   export default {
       name: "SelectFeature",
@@ -91,7 +92,7 @@
           if(newFeatureList.features||newFeatureList.geometries){//如果查询的结果不为空，则进行要素显示和定位
             //collide中如果上传的文件时火星坐标系，则不需要数据库进行转换，直接读取shp文件的geojson，格式为{"type":"FeatureCollection","geometries:[{"type":"LineString","coor"}]"}
             let selectedFeatures=new GeoJSON().readFeatures(newFeatureList);
-            this.selectedVectorSource.addFeatures(selectedFeatures);
+            this.selectedVectorSource.addFeatures(featureTransform(selectedFeatures,'EPSG:4326','EPSG:3857'));
             this.map.getView().fit(this.selectedVectorSource.getExtent());
           }
         },

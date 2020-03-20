@@ -236,6 +236,12 @@ export default {
                   expand: true,
                   value:'tg',
                   layer:null
+                },
+                {
+                  title: '土地利用现状',
+                  expand: true,
+                  value:'tdlyxz',
+                  layer:null
                 }
               ]
             },
