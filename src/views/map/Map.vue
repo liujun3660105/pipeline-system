@@ -51,7 +51,7 @@ export default {
       xyzIndex: 0,
       themeLayers: [
         //图层显示顺序是下面的覆盖上面的
-        //增加图层：1.Map组件增加专题图层；2.store中access增加图层权限；3.getFeatureInfo增加图层属性信息
+        //增加图层：1.Map组件增加专题图层；2.store中access增加图层权限；3.getFeatureInfo增加图层属性信息 4.popupOverlay指定谁显示
         {
           value: "xzbj",
           layer: new TileLayer({
@@ -121,14 +121,14 @@ export default {
           })
         },
         {
-          value: "tg",
+          value: "kg",
           layer: new TileLayer({
             source: new TileWMS({
               url: config.layerUrl + "/geoserver/yd/wms",
               params: {
                 FORMAT: "image/png",
                 VERSION: "1.1.1",
-                LAYERS: "yd:tg20180507",
+                LAYERS: "yd:kg-ysp20190613",
                 exceptions: "application/vnd.ogc.se_inimage"
               },
               projection: "EPSG:4326"
@@ -138,14 +138,14 @@ export default {
           })
         },
         {
-          value: "kg",
+          value: "tg",
           layer: new TileLayer({
             source: new TileWMS({
               url: config.layerUrl + "/geoserver/yd/wms",
               params: {
                 FORMAT: "image/png",
                 VERSION: "1.1.1",
-                LAYERS: "yd:kg-ysp20190613",
+                LAYERS: "yd:tg20180507",
                 exceptions: "application/vnd.ogc.se_inimage"
               },
               projection: "EPSG:4326"
@@ -316,6 +316,40 @@ export default {
                 FORMAT: "image/png",
                 VERSION: "1.1.1",
                 LAYERS: "hd:hd-hdlx",
+                exceptions: "application/vnd.ogc.se_inimage"
+              },
+              projection: "EPSG:4326"
+            }),
+            zIndex: 2,
+            visible: false
+          })
+        },
+        {
+          value: "wxcz",
+          layer: new TileLayer({
+            source: new TileWMS({
+              url: config.layerUrl + "/geoserver/wxy/wms",
+              params: {
+                FORMAT: "image/png",
+                VERSION: "1.1.1",
+                LAYERS: "wxy:wxcz",
+                exceptions: "application/vnd.ogc.se_inimage"
+              },
+              projection: "EPSG:4326"
+            }),
+            zIndex: 2,
+            visible: false
+          })
+        },
+                {
+          value: "wxzd",
+          layer: new TileLayer({
+            source: new TileWMS({
+              url: config.layerUrl + "/geoserver/wxy/wms",
+              params: {
+                FORMAT: "image/png",
+                VERSION: "1.1.1",
+                LAYERS: "wxy:wxzd",
                 exceptions: "application/vnd.ogc.se_inimage"
               },
               projection: "EPSG:4326"

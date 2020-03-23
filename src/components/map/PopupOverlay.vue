@@ -38,7 +38,7 @@ export default {
       overlay: null,
       featureStructure: {},
       overlayTitle: "",
-      showLayerList: ["pc", "dh", "sy", "wt", "xm", "kg", "tg"]
+      showLayerList: ["pc", "dh", "sy", "wt", "xm", "kg", "tg", "tdlyxz","wxzd","wxcz"]
     };
   },
   computed: {
@@ -319,12 +319,40 @@ export default {
               this.featureStructure = {
                 dlbm: "规划代码",
                 dlmc: "规划地类",
-                qsdwdm:"权属单位代码",
-                qsdwmc:"权属单位名称",
-                zldwmc:"座落单位名称",
-                tbmj:"图斑面积"
+                qsdwdm: "权属单位代码",
+                qsdwmc: "权属单位名称",
+                zldwmc: "座落单位名称",
+                tbmj: "图斑面积"
               };
-              this.overlayTitle = "土规";
+              this.overlayTitle = "土地利用现状";
+              break;
+            case "wxzd":
+              this.featureStructure = {
+                dwmc: "单位名称",
+                jdlb: "监督类别",
+                qy: "所属区域",
+                jcrq: "检查日期",
+                lx: "类型"
+              };
+              this.overlayTitle = "危险站点";
+              break;
+            case "wxcz":
+              this.featureStructure = {
+                wxczmc: "危险场站名称",
+                dwmc: "单位名称",
+                tbrq: "填表日期",
+                dwzyfzr: "单位主要负责人",
+                lxbm: "联系部门",
+                lxr: "联系人",
+                dh:'联系电话',
+                lb:'类别',
+                szfw:'四至范围',
+                jsnd:'建设年代',
+                sjnx:'设计年限',
+                mqzt:'目前状态',
+                bz:'备注'
+              };
+              this.overlayTitle = "危险场站";
               break;
           }
         } else {

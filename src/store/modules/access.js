@@ -167,7 +167,7 @@ export default {
               children: [
                 {
                   title: '普查管线',
-                  expand: true,
+                  expand: false,
                   children: [
                     {
                       title: '普查',
@@ -292,6 +292,24 @@ export default {
                   layer:null
                 }
               ]
+            },
+            {
+              title: '危险源',
+              expand: false,
+              children:[
+                {
+                  title: '危险站点',
+                  expand: true,
+                  value:'wxzd',
+                  layer:null
+                },
+                {
+                  title: '危险场站',
+                  expand: true,
+                  value:'wxcz',
+                  layer:null
+                }
+              ]
             }
           ];
           break;
@@ -368,7 +386,7 @@ export default {
               children: [
                 {
                   title: '普查管线',
-                  expand: true,
+                  expand: false,
                   children: [
                     {
                       title: '普查',
