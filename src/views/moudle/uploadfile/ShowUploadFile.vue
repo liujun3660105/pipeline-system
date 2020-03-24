@@ -33,7 +33,7 @@
       },
       featureStyleFunction(feature){
         // console.log(feature);
-        let color = feature.getProperties().color
+        let color = feature.getProperties().color;
         let image = new CircleStyle({
           radius: 2,
           fill: new Fill({color: 'rgb('+color+')'}),
