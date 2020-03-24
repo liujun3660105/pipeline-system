@@ -45,7 +45,8 @@
               url:'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}'
             });//google source
             this.imageLayer=new TileLayer({
-              source:this.googleRaterSource
+              source:this.googleRaterSource,
+              zIndex:6
             });
             this.map.addLayer(this.imageLayer);
             this.target.addEventListener('mousemove', this.mousemoveEvent);
@@ -66,7 +67,6 @@
             });
             // before rendering the layer, do some clipping
             this.imageLayer.on('precompose', (event)=> {
-
               var ctx = event.context;
               var pixelRatio = event.frameState.pixelRatio;
               ctx.save();

@@ -84,8 +84,7 @@ export default {
           .getSource()
           .getGetFeatureInfoUrl(
             coordinate,
-            0.00005,
-            // this.view.getResolution(),
+            this.view.getResolution()/222638.9815,
             "EPSG:4326",
             {
               INFO_FORMAT: "application/json"
