@@ -1,5 +1,6 @@
 <template>
     <div class="collide">
+      <Loading :spinShown="spinShown"></Loading>
       <Row :gutter="0" class="item-row">
         <i-col span="12">
           <Row class="item-item-row" >
@@ -72,7 +73,7 @@
 
 <script>
   import {getUploadGeometry,getAnalyzeGeometry} from '@/api/collide'
-  import {mapMutations} from 'vuex'
+  import {mapState,mapMutations} from 'vuex'
     export default {
         name: "Collide",
       data(){
@@ -182,6 +183,7 @@
           }
       },
       computed:{
+        ...mapState('spin',['spinShown']),
         format(){
             if(this.dataType){
               return new Array(this.dataType);
@@ -260,11 +262,11 @@
            // return false;
         },
         upload () {
-          let config={
-            headers:{
-              'Content-Type':'multipart/form-data:boundary='+new Date().getTime()
-            }
-          };
+          // let config={
+          //   headers:{
+          //     'Content-Type':'multipart/form-data:boundary='+new Date().getTime()
+          //   }
+          // };
           let formData=new FormData();
           formData.append('file',this.file);
           formData.append('coortype',this.coorType);
@@ -310,7 +312,6 @@
         },
         selectRow(val,index){
           this.$store.commit('DbClickRowXmIdChange',val.xmbm);
-
         },
         getFileSuffix(fileName){
           let index=fileName.lastIndexOf(".");
@@ -327,7 +328,7 @@
           this.loadingStatus=false;
         },
         startAnalyze(){
-            console.log(this.uploadGeoJsonStr,'aaa');
+          this.gxInfoData = [];
             //分别去除组织好的需要传的参数
           let gxInfoList=this.gxInfoAllStr.split(',');
           let zy=gxInfoList[0];
@@ -339,9 +340,12 @@
             //如果上传的管线区域无物探管线，则返回的字符串是sql错误信息，不是json的字符串，无法用JSON.parse方法
             //判断是否是json的字符串
             if(this.isJSON(res.data.data)){
+              this.$Message.success('分析成功');
               let geoJsonResult=JSON.parse(res.data.data);
               this.featuresChange(geoJsonResult);
               this.gxInfoData=JSON.parse(res.data.data).features.map(x=>x.properties);
+            }else{
+               this.$Message.error('分析失败');
             }
           })
         },
@@ -359,7 +363,9 @@
 </script>
 
 <style scoped>
-
+.collide{
+  position: relative;
+}
   .info-title{
     color:white;
     font-size:15px;

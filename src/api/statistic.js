@@ -2,13 +2,13 @@ import Axios from 'axios'
 export const getTotalLength=()=>{
   return Axios.request({
     method:'get',
-    url:'get_total_length'
+    url:'/api/statistic/getTotalLength'
   })
 };
 export const getChartInitData=(geom,dataType)=>{
   return Axios.request({
     method:'get',
-    url:'get_chart_init_data',
+    url:'/api/statistic/getChartInitData',
     params:{
       geom:geom,
       dataType:dataType

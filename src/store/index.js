@@ -11,6 +11,7 @@ import collide from './modules/collide'
 import modal from './modules/modal'
 import upload from './modules/upload'
 import legend from './modules/legend'
+import spin from './modules/spin'
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
@@ -32,6 +33,7 @@ export default new Vuex.Store({
     collide,
     modal,
     upload,
-    legend
+    legend,
+    spin
   }
 })

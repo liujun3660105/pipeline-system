@@ -28,8 +28,9 @@ export default {
       userName=userName.trim();
       return new Promise((resolve,reject)=>{
         login({userName,password}).then(res=>{
-            let data=res.data;
-            context.commit('setToken',data.token);
+          console.log(res);
+            // let data=res.data;
+            // context.commit('setToken',data.token);
             resolve(res);
           }
         ).catch(err=>{
@@ -44,12 +45,9 @@ export default {
         try {
           getUserInfo(state.token).then(res => {
             const data = res.data;
-            commit('setHasGetInfo', true);
-            commit('setUserName', data.data.userName);
-            commit('setAccess', data.data.access);
+            commit('setUserName', data.data.userName.trim());
+            commit('setAccess', data.data.access.trim());
             resolve(data)
-          }).catch(err => {
-            reject(err)
           })
         } catch (error) {
           reject(error)
@@ -58,8 +56,9 @@ export default {
     },
     handleLogOut (context) {
       return new Promise((resolve, reject) => {
-          context.commit('setToken', '')
-          context.commit('setAccess', '')
+        localStorage.removeItem("token");
+          // context.commit('setToken', '')
+          // context.commit('setAccess', '')
           resolve()
         // 如果退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
       })

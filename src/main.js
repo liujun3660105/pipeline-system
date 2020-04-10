@@ -8,12 +8,13 @@ import App from './App'
 import store from './store'
 import axios from './api/axios'
 import 'babel-polyfill'
-
+import "@/components"   //
 Vue.prototype.$axios=axios;
 Vue.use(iView);
 
 Vue.config.productionTip = false
 Vue.prototype.HOST='/api'
+
 
 /* eslint-disable no-new */
 new Vue({

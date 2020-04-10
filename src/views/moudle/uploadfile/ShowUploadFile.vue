@@ -68,7 +68,7 @@
           }),
           'MultiPolygon': new Style({
             stroke: new Stroke({
-              color: 'rgb('+color+')',
+              color: 'rgb(0,0,0)',
               width: 1
             }),
             fill: new Fill({
@@ -77,7 +77,7 @@
           }),
           'Polygon': new Style({
             stroke: new Stroke({
-              color: 'rgb('+color+')',
+              color: 'rgb(0,0,0)',
               width: 1
             }),
             fill: new Fill({

@@ -39,6 +39,7 @@
 </template>
 <script>
   import {mapState,mapMutations} from 'vuex'
+  const typeObj = {snsj:"所内设计", snsc:"所内审查", ysp:"已审批"}
     export default {
         name: "Search",
         data(){
@@ -288,23 +289,24 @@
                 break;
             }
             //项目查询
-            this.$axios.get('/searchxminfobykeyword',{
+            this.$axios.get('api/search/getXminfo',{
               params: {
                 keyWord: this.keyWord,
                 keyWordType: this.keyWordType
               }
             }).then((res)=>{
               this.isShownTableContent=true;
+              console.log(res);
               this.xmInfo=res.data.data;
             }).catch((err)=>{
 
             })
 
             //要素查询
-            this.$axios.get('/searchfeaturebykeyword',{
+            this.$axios.get('api/search/getFeature',{
               params: {
                 keyWord: this.keyWord,
-                keyWordType:this.keyWordType
+                keyWordType: typeObj[this.keyWordType]
               }
             }).then((res)=>{
               this.$store.commit('featuresChange',res.data.data[0]);

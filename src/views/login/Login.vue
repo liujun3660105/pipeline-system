@@ -34,6 +34,7 @@
         handleSubmit({userName, password}) {
           this.handleLogin({userName, password}).then(res => {
             if (res.status === 200) {
+              window.localStorage.setItem("token", res.data.token);
               this.getUserInfo().then(res => {
                 this.$router.push({
                   name: 'home'
