@@ -5,7 +5,7 @@
         <Icon type="ios-loading" size="18" class="demo-spin-icon-load"></Icon>
       </Spin>
     </div>
-    <div v-else class="popup-overlay">
+    <div v-else class="popup-overlay" id="popup-overlay">
       <div class="popup-overlay-arrow"></div>
       <div class="popup-overlay-header">
         <div class="popup-overlay-header-title">
@@ -31,6 +31,7 @@
 <script>
 import Overlay from "ol/Overlay.js";
 import ready from "@/mixins/ready";
+import Resize from "@/util/resize";
 export default {
   name: "PopupOverlay",
   data() {
@@ -38,7 +39,19 @@ export default {
       overlay: null,
       featureStructure: {},
       overlayTitle: "",
-      showLayerList: ["pc", "dh", "sy", "wt", "xm", "kg", "tg", "tdlyxz","wxzd","wxcz"]
+      showLayerList: [
+        "pc",
+        "dh",
+        "sy",
+        "wt",
+        "xm",
+        "kg",
+        "tg",
+        "tdlyxz",
+        "wxzd",
+        "wxcz"
+      ],
+      mapEl: null
     };
   },
   computed: {
@@ -93,6 +106,7 @@ export default {
         autoPanMargin: 200
       });
       this.map.addOverlay(this.overlay);
+      this.mapEl = document.getElementById("map");
     },
     _getPosition(position) {
       //如果所点击的图层不在layerType中，则不显示popup
@@ -103,7 +117,51 @@ export default {
     },
     _handleClose() {
       this.overlay.setPosition(undefined);
+      this.mapEl.onmousemove = null;
       return false;
+    },
+    /**
+     * resize方法 不能直接监听div的onmousemove事件，当移动时，会移出div导致onmousemove无法触发
+     * 此案例通过id="map"这个dom元素进行onmousemove监听
+     */
+    resize() {
+      
+      let el = null;//
+      let theobject = null;//用于在鼠标按住时 通过判断theobject是否为空，开启调整大小
+      //此时无法获取el元素，只能获取this.$el
+      this.$el.onmousemove = e => {
+        el = document.getElementsByClassName("popup-overlay-content")[0];//获取元素大小
+      };
+//点击后，进行监听,相当于一个开关
+      this.$el.onmousedown = e => {
+        theobject = el;
+      };
+      this.mapEl.onmousemove = e => {
+        const rect = el.getBoundingClientRect();
+        const elBottom = rect.bottom;//获取el元素的底部位置
+        const elTop = rect.top;//获取el元素的顶部位置
+        //当鼠标到div底部边沿
+        if (Math.abs(e.clientY - elBottom) <= 8) {
+          el.style.cursor = "s-resize";
+        if (theobject) {
+          //div小于显示内容并且div大于200时，才能改变大小
+          if (
+            e.clientY - elTop < Object.keys(this.featureInfo).length * 20 &&
+            e.clientY - elTop > 200
+          ) {
+            el.style.height = e.clientY - rect.top + "px";
+          } else {
+            return;
+          }
+        }
+        } else {
+          el.style.cursor = "auto";
+        }
+
+      };
+      this.mapEl.onmouseup = e => {
+        theobject = null;
+      };
     }
   },
   watch: {
@@ -112,6 +170,7 @@ export default {
     getPositionandLayerType(newObject) {
       if (this.showLayerList.includes(newObject.layerType)) {
         this.overlay.setPosition(this._getPosition(newObject.position));
+        this.resize();
       } else {
         this._handleClose();
       }
@@ -344,13 +403,13 @@ export default {
                 dwzyfzr: "单位主要负责人",
                 lxbm: "联系部门",
                 lxr: "联系人",
-                dh:'联系电话',
-                lb:'类别',
-                szfw:'四至范围',
-                jsnd:'建设年代',
-                sjnx:'设计年限',
-                mqzt:'目前状态',
-                bz:'备注'
+                dh: "联系电话",
+                lb: "类别",
+                szfw: "四至范围",
+                jsnd: "建设年代",
+                sjnx: "设计年限",
+                mqzt: "目前状态",
+                bz: "备注"
               };
               this.overlayTitle = "危险场站";
               break;
@@ -360,7 +419,8 @@ export default {
         }
       }
     }
-  }
+  },
+  mounted() {}
 };
 </script>
 
@@ -371,7 +431,7 @@ export default {
   left: 10px;
   width: 300px;
   height: 250px;
-  background-color: rgba(0, 0, 0, 0.5);
+
   border-radius: 10px;
   font-size: 15px;
   color: white;
@@ -389,6 +449,7 @@ export default {
 .popup-overlay-header {
   height: 50px;
   border-bottom: solid 1px white;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 .popup-overlay-header-title span {
   position: absolute;
@@ -412,6 +473,7 @@ export default {
 
 /*}*/
 .popup-overlay-content {
+  background-color: rgba(0, 0, 0, 0.5);
   overflow: auto;
   height: 200px;
 }
