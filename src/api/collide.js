@@ -7,7 +7,6 @@ export const getUploadGeometry=(formData)=>{
   })
 };
 
-
 export const getAnalyzeGeometry=(uploadGeoJsonStr,zy,gj,ylz,msfs,gjvalue)=>{
   return Axios.request({
     method:'get',

@@ -7,6 +7,7 @@
     <SelectFeature></SelectFeature>
     <UploadFeature></UploadFeature>
     <ShowUploadFile></ShowUploadFile>
+    <GlobalFeature></GlobalFeature>
   </div>
 </template>
 
@@ -29,12 +30,14 @@ import {
 import Legend from "@/components/map/Legend";
 import CoordinateShown from "./CoordinateShown";
 import proj from "@/mixins/proj";
+import downloadDraw from "@/mixins/downloadDraw";
 import { gcj02tobd09, gcj02towgs84 } from "@/api/latlngTransform";
 // import ShowFeatureInfo from '@/views/moudle/search/ShowFeatureInfo'由于与工具条GetFeatureInfo有冲突，暂时取消这个功能
 import DrawGeometry from "@/components/map/DrawGeometry";
 import SelectFeature from "@/views/moudle/search/SelectFeature";
 import UploadFeature from "@/views/moudle/collide/UploadFeature";
 import ShowUploadFile from "../../views/moudle/uploadfile/ShowUploadFile";
+import GlobalFeature from "@/components/map/GlobalFeature";
 import config from "@/config";
 import { mapState, mapMutations } from "vuex";
 export default {
@@ -463,7 +466,8 @@ export default {
       filterStr: "" //管线图层类过滤信息
     };
   },
-  mixins: [proj],
+  mixins: [downloadDraw,proj],
+  // downloadDraw,
   computed: {
     ...mapState("legend", ["selectedList"]),
     //得到layer传过来的图层
@@ -499,7 +503,8 @@ export default {
     SelectFeature,
     UploadFeature,
     CoordinateShown,
-    ShowUploadFile
+    ShowUploadFile,
+    GlobalFeature
   },
   mounted() {
     this.initMap();

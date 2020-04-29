@@ -86,8 +86,7 @@ export default {
       path: "",
       files: [],
       uploadButtonShown: false,
-      spinShow: true,
-      spinShown: false
+      spinShown:false
     };
   },
   computed: {
@@ -187,7 +186,6 @@ export default {
     //上传文件到FMEServer
     uploadFiles(e) {
       verifyToken().then(res => {
-        console.log(res);
         this.uploadButtonShown = false;
         if (e.target.files.length > 0) {
           let fileSize = e.target.files[0].size;

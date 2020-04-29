@@ -5,4 +5,5 @@ import Collide from './collide'
 import Distance from './Distance'
 import Connection from './Connection'
 import UploadFile from './uploadfile'
-export  {Layer,Search,Statistic,Collide,Distance,Connection,UploadFile}
+import GeomExport from './GeomExport'
+export  {Layer,Search,Statistic,Collide,Distance,Connection,UploadFile,GeomExport}

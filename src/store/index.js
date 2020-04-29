@@ -12,6 +12,8 @@ import modal from './modules/modal'
 import upload from './modules/upload'
 import legend from './modules/legend'
 import spin from './modules/spin'
+import geomExport from './modules/geomExport'
+import globalFeature from './modules/globalFeature'
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
@@ -34,6 +36,8 @@ export default new Vuex.Store({
     modal,
     upload,
     legend,
-    spin
+    spin,
+    geomExport,
+    globalFeature
   }
 })

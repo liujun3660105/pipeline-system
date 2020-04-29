@@ -1,5 +1,6 @@
 <template>
   <div class="collide">
+    <Loading :spinShown="spinShown"></Loading>
     <Row :gutter="0" class="item-row">
       <i-col span="8" class="gxinfo-col">
         <span class="gxinfo-title">请选择管线类别</span>
@@ -118,6 +119,7 @@ export default {
   },
   computed: {
     ...mapState("draw", ["isDraw"]),
+    ...mapState("spin", ["spinShown"]),
     ...mapState({
       geomWKT: state => state.distance.geomWKT
     }),
@@ -157,7 +159,8 @@ export default {
           break;
       }
       return returnInfo.join(",");
-    }
+    },
+    ...mapState("modal", ["modalState"])
   },
   methods: {
     ...mapMutations("draw", [
@@ -165,10 +168,7 @@ export default {
       "isDrawShownChange", //画图工具所画图形关闭或开启
       "moduleTypeChange"
     ]),
-    ...mapMutations(["featuresChange", "DbClickRowXmIdChange"]),
-    selectRow(val, index) {
-      this.$store.commit("DbClickRowXmIdChange", val.xmbm);
-    },
+    ...mapMutations('globalFeature',["globalFeaturesChange"]),
     startDrawGeom() {
       this.isDrawChange(true); //开启画图
       this.moduleTypeChange("distance"); //设置vuex中draw模块的moduletype值告诉DrawGeometry是统计模块调用画图工具
@@ -196,7 +196,7 @@ export default {
           this.$Message.success("分析成功");
           if (JSON.parse(res.data.data).features) {
             let geoJsonResult = JSON.parse(res.data.data);
-            this.featuresChange(geoJsonResult);
+            this.globalFeaturesChange(geoJsonResult);
             this.isDrawShownChange(false);
           } else {
             //当画的图形下面没有管线，应该直接返回所化图形，后台却直接返回为空
@@ -205,7 +205,7 @@ export default {
             let drawGeometrywkt = wktnull.readFeatures(newGeomWKT);
             let geojsonnull = new GeoJSON();
             let drawGeometryJson = geojsonnull.writeFeatures(drawGeometrywkt);
-            this.featuresChange(JSON.parse(drawGeometryJson));
+            this.globalFeaturesChange(JSON.parse(drawGeometryJson));
             this.isDrawShownChange(false);
           }
         } else {
@@ -214,6 +214,10 @@ export default {
 
         // this.gxInfoData=JSON.parse(res.data.data).features.map(x=>x.properties);
       });
+    },
+    //变换后清除drawInteraction
+    modalState(newState) {
+      this.isDrawChange(false);
     }
   }
 };

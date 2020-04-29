@@ -57,6 +57,12 @@ export default {
               title: '文件上传',
               name: 'UploadFile',
               icon: 'ios-cloud-upload'
+            },
+            {
+              id: 8,
+              title: '数据导出',
+              name: 'GeomExport',
+              icon: 'ios-cloud-download'
             }
           ];
           break;

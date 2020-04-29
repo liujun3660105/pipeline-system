@@ -3,7 +3,9 @@ export default {
   state:{
     isDraw:false,
     moduleType:'',
-    isDrawShown:true
+    isDrawShown:true,
+    isDownloadDraw:false,
+    geomType:''
   },
   mutations:{
     isDrawChange(state,data){
@@ -14,6 +16,12 @@ export default {
     },
     isDrawShownChange(state,data){
       state.isDrawShown=data;
+    },
+    isDownloadDrawChange(state,data){
+      state.isDownloadDraw = data;
+    },
+    geomTypeChange(state,data){
+      state.geomType = data;
     }
 
   }

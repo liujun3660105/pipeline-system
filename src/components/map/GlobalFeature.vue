@@ -14,21 +14,21 @@ import { mapState } from "vuex";
 import featureTransform from "@/util/featureTransform";
 
 export default {
-  name: "SelectFeature",
+  name: "GlobalFeature",
   mixins: [ready],
   data() {
     return {
-      selectedVectorLayer: null,
-      selectedVectorSource: null,
-      selectedFeatures: []
+      globalVectorLayer: null,
+      globalVectorSource: null,
+      globalSelectedFeatures: []
     };
   },
   methods: {
     _load() {
       //设置筛选出的要素相关图层和源
-      this.selectedVectorSource = new Vector();
-      this.selectedVectorLayer = new VectorLayer({
-        source: this.selectedVectorSource,
+      this.globalVectorSource = new Vector();
+      this.globalVectorLayer = new VectorLayer({
+        source: this.globalVectorSource,
         // new Vector({
         // features:features
         //这里features是数组
@@ -60,14 +60,15 @@ export default {
         }),
         zIndex: 3
       });
-      this.$store.commit("selectLayerChange", this.selectedVectorLayer);
-      this.map.addLayer(this.selectedVectorLayer);
+      // this.$store.commit("selectLayerChange", this.globalVectorLayer);
+      this.map.addLayer(this.globalVectorLayer);
     }
   },
   computed: {
     ...mapState("modal", ["modalState"]),
-    getSelectedFeatures() {
-      return this.$store.state.search.features;
+    ...mapState("globalFeature",["globalFeatures","DbClickRow"]),
+    // getSelectedFeatures() {
+      // return this.$store.state.search.features;
       //从后端传来的数据成果有两种形式，一种是geojson数据，一种是json数据，对应后台的sql语句
       //注释部分为json部分，但是feature和properities是分离的，对于后期不好实现点击查看要素信息,所以利用的是geojson数据
       // let selectedGeoms=[];
@@ -75,46 +76,48 @@ export default {
       //   console.log(JSON.parse(feature.geom));
       //   selectedGeoms.push(JSON.parse(feature.geom).coordinates);
       // });
-    },
-    getDbClickRowXmId() {
-      return this.$store.state.search.DbClickRowXmId;
-    }
+    // },
+    // getDbClickRowXmId() {
+    //   return this.$store.state.search.DbClickRowXmId;
+    // }
   },
   watch: {
-    //切换modal时自动清除
-    // modalState(newState){
-    //   this.selectedVectorSource.clear();
-    // },
+    //点击工具栏清除要素，进行清除
+    modalState(newState){
+      this.globalVectorSource.clear();
+    },
     //异步获取xmline表的要素数据，更改vuex中search模块的features
-    getSelectedFeatures(newFeatureList) {
-      this.selectedVectorSource.clear();
+    globalFeatures(newFeatureList) {
+      console.log('newFeatureList',newFeatureList)
+      this.globalVectorSource.clear();
       if (newFeatureList.features || newFeatureList.geometries) {
         //如果查询的结果不为空，则进行要素显示和定位
         //collide中如果上传的文件时火星坐标系，则不需要数据库进行转换，直接读取shp文件的geojson，格式为{"type":"FeatureCollection","geometries:[{"type":"LineString","coor"}]"}
-        let selectedFeatures = new GeoJSON().readFeatures(newFeatureList);
-        this.selectedVectorSource.addFeatures(
-          featureTransform(selectedFeatures, "EPSG:4326", "EPSG:3857")
+        let features = new GeoJSON().readFeatures(newFeatureList);
+        this.globalVectorSource.addFeatures(
+          featureTransform(features, "EPSG:4326", "EPSG:3857")
         );
-        this.map.getView().fit(this.selectedVectorSource.getExtent());
+        this.map.getView().fit(this.globalVectorSource.getExtent());
       }
     },
     //双击表格某一行，得到这一行数据的项目编号
-    getDbClickRowXmId(newXmId) {
-      this.selectedFeatures.forEach(feature => {
+    DbClickRow(newXmId) {
+      console.log('新的',newXmId);
+      this.globalSelectedFeatures.forEach(feature => {
         feature.setStyle(null);
       });
-      this.selectedFeatures = this.selectedVectorSource
+      this.globalSelectedFeatures = this.globalVectorSource
         .getFeatures()
         .filter(feature => {
           return feature.getProperties().xmbm === newXmId;
         });
-      if (this.selectedFeatures.length === 0) {
-        this.$Message.warning({
-          content: "目前所选项目的管线信息还未入库！",
-          duration: 1.5
-        });
-        return;
-      }
+      // if (this.globalSelectedFeatures.length === 0) {
+      //   this.$Message.warning({
+      //     content: "目前所选项目的管线信息还未入库！",
+      //     duration: 1.5
+      //   });
+      //   return;
+      // }
       let style = new Style({
         stroke: new Stroke({
           color: "rgba(0, 255, 255, 0.9)",
@@ -123,7 +126,7 @@ export default {
         })
       });
       let geometries = [];
-      this.selectedFeatures.forEach(feature => {
+      this.globalSelectedFeatures.forEach(feature => {
         geometries.push(feature.getGeometry());
         feature.setStyle(style);
       });

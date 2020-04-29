@@ -31,7 +31,6 @@
 <script>
 import Overlay from "ol/Overlay.js";
 import ready from "@/mixins/ready";
-import Resize from "@/util/resize";
 export default {
   name: "PopupOverlay",
   data() {

@@ -8,7 +8,7 @@ import App from './App'
 import store from './store'
 import axios from './api/axios'
 import 'babel-polyfill'
-import "@/components"   //
+import "@/components"   //注册全局组件
 Vue.prototype.$axios=axios;
 Vue.use(iView);
 

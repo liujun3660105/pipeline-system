@@ -199,7 +199,8 @@ export default {
     ...mapState({
       geomWKT: state => state.statistic.geomWKT
     }),
-    ...mapState("spin", ["spinShown"])
+    ...mapState("spin", ["spinShown"]),
+    ...mapState("modal", ["modalState"])
   },
   methods: {
     ...mapMutations("draw", ["isDrawChange", "moduleTypeChange"]),
@@ -464,6 +465,10 @@ export default {
             }
         }
       });
+    },
+        //变换后清除drawInteraction
+    modalState(newState) {
+      this.isDrawChange(false);
     }
   },
   mounted() {},
