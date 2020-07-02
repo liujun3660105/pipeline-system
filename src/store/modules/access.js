@@ -131,6 +131,7 @@ export default {
      * @param {rootGetters} rootGetters 根部getters数据
      * @description 根据user模块的access值，获取对应用户的图层
      */
+    
     getAccessLayers(state, getters, rootState, rootGetters) {
       let access = rootState.user.access;
       let getLayers = [];
@@ -140,6 +141,7 @@ export default {
             {
               title: '行政边界',
               expand: false,
+              disableCheckbox: true,
               children: [
                 {
                   title: '新区行政边界',
@@ -170,10 +172,12 @@ export default {
             {
               title: '管线数据',
               expand: false,
+              disableCheckbox: true,
               children: [
                 {
                   title: '普查管线',
                   expand: false,
+                  disableCheckbox: true,
                   children: [
                     {
                       title: '普查',
@@ -212,6 +216,7 @@ export default {
             {
               title: '交通',
               expand: false,
+              disableCheckbox: true,
               children: [
                 {
                   title: '规划轨道',
@@ -230,12 +235,27 @@ export default {
             {
               title: '用地数据',
               expand: false,
+              disableCheckbox: true,
               children:[
+
                 {
                   title: '控规',
-                  expand: true,
-                  value:'kg',
-                  layer:null
+                  expand: false,
+                  disableCheckbox: true,
+                  children:[
+                    {
+                      title: '控规全覆盖2019',
+                      expand: true,
+                      value:'kg',
+                      layer:null
+                    },
+                    {
+                      title: '控规审批',
+                      expand: true,
+                      value:'kgsp',
+                      layer:null
+                    },
+                  ]
                 },
                 {
                   title: '土规',
@@ -254,6 +274,7 @@ export default {
             {
               title: '规划控制线',
               expand: false,
+              disableCheckbox: true,
               children:[
                 {
                   title: '城市黄线',
@@ -302,6 +323,7 @@ export default {
             {
               title: '危险源',
               expand: false,
+              disableCheckbox: true,
               children:[
                 {
                   title: '危险站点',
@@ -316,6 +338,51 @@ export default {
                   layer:null
                 }
               ]
+            },
+            {
+              title: '上位规划',
+              expand: false,
+              disableCheckbox: true,
+              children:[
+                {
+                  title: '市政专项',
+                  expand: false,
+                  disableCheckbox: true,
+                  children:[
+                    {
+                      title: '排水专项',
+                      expand: true,
+                      value:'pszx',
+                      layer:null
+                    },
+                    {
+                      title: '给水专项',
+                      expand: true,
+                      value:'gszx',
+                      layer:null
+                    },
+                    {
+                      title: '中水专项',
+                      expand: true,
+                      value:'zszx',
+                      layer:null
+                    },
+                    {
+                      title: '供热专项',
+                      expand: true,
+                      value:'grzx',
+                      layer:null
+                    }
+
+                  ]
+                }
+
+              ]
+            },
+            {
+              title: '国土空间规划',
+              expand: false,
+              disableCheckbox: true,
             }
           ];
           break;

@@ -34,6 +34,7 @@
 
             this.googleRaterSource=new XYZ({
               url:'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}'
+
             });//google source
 
             var url=config.layerUrl+'/geoserver/gwc/service/tms/1.0.0/terrain%3AterrainData@EPSG%3A4326@png/';//地形图TMS服务、栅格切片
@@ -62,6 +63,7 @@
             this.XYZSourceList[0]=this.autoNaviSource;
             this.XYZSourceList[1]=this.googleRaterSource;
             this.XYZSourceList[2]=this.terrainSource;
+            this.XYZSourceList[3]=this.googleRaterSource;
             this.tileLayer=new TileLayer({
               source:this.XYZSourceList[0]
             });
@@ -74,13 +76,22 @@
             // this.map.addLayer(this.tileLayer);
           },
         BaseMapToggle(){
-          this.xyzIndex=(++this.xyzIndex)%3;
+          this.xyzIndex=(++this.xyzIndex)%4;
         },
       },
       watch:{
         xyzIndex(newIndex){
-          // this.tileLayer.getSource().setUrl(this.XYZTileList[newIndex]);
+          console.log(newIndex);
+          //增加空白图层
           this.tileLayer.setSource(this.XYZSourceList[newIndex]);
+
+          if(newIndex===3){
+            this.tileLayer.setVisible(false);
+          }else{
+            this.tileLayer.setVisible(true);
+
+          }
+          // this.tileLayer.getSource().setUrl(this.XYZTileList[newIndex]);
         }
       }
 

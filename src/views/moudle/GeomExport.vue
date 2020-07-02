@@ -95,6 +95,7 @@ export default {
     }
   },
   methods: {
+    //mixins中执行
     ...mapMutations("geomExport", [
       "isDownloadDrawChange",
       "geomTypeChange",

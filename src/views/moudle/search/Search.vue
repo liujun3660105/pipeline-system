@@ -37,7 +37,13 @@
         </Col>
       </div>
       <div class="page">
-       <Page :total="xmCount" size="small" show-elevator @on-change="pageChange" :current="currentPage"></Page>
+        <Page
+          :total="xmCount"
+          size="small"
+          show-elevator
+          @on-change="pageChange"
+          :current="currentPage"
+        ></Page>
       </div>
     </div>
     <div class="search-none-info" v-else>
@@ -68,7 +74,12 @@ export default {
       isShownTableContent: false,
       isDraw: false,
       searchFlag: true,
-      currentPage:1
+      currentPage: 1,
+      isLoading: false,
+      btnEnable: true,
+      btnValue: "下载",
+      tableDisableIndex:-1,
+      tableLoadingIndex:-1
     };
   },
   computed: {
@@ -82,11 +93,14 @@ export default {
       return this.$store.state.search.geomWKT;
     },
     ...mapState("modal", ["modalState"]),
-    xmCount(){
+    xmCount() {
       return this.xmAllInfo.length;
     },
-    xmInfo(){
-      return this.xmAllInfo.slice((this.currentPage-1)*10,this.currentPage*10);
+    xmInfo() {
+      return this.xmAllInfo.slice(
+        (this.currentPage - 1) * 10,
+        this.currentPage * 10
+      );
     }
   },
   methods: {
@@ -95,12 +109,43 @@ export default {
       if (this.keyWordType) {
         //修改初始值和vuex中search.js的searchParams
         this.isShownTable = true; //显示表格
+        this.resumeBtn(); //还原表格中按钮的内容和可用性
+
         this.$store.commit("keyWordChange", {
           searchKeyWord: this.keyWord,
           searchType: this.keyWordType
         });
         this.isShownTableContent = false; //显示表格内容
         //设置表头
+        //声明下载表头内容
+        const downLoadField = {
+          title: "操作",
+          key: "action",
+          width: 150,
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "Button",
+              {
+                props: {
+                  type: "primary",
+                  size: "small",
+                  disabled: !(params.index !== this.tableDisableIndex && params.row.hasFile),//disabled和loading不能同步,所以分开定义tableLoadingIndex,tableDisabledIndex
+                  // loading: this.isLoading
+                  loading:params.index === this.tableLoadingIndex
+                },
+                on: {
+                  click: () => {
+                    let index = params.index;
+                    let { xmbh } = params.row;
+                    this.downloadFile(index,xmbh, this.keyWordType);
+                  }
+                }
+              },
+              params.index === this.tableDisableIndex ? (params.index === this.tableDisableIndex?  '已下载' : 'Loading...') : '下载'
+            );
+          }
+        };
         switch (this.keyWordType) {
           case "snsj":
             this.xmInfoColumns = [
@@ -141,7 +186,8 @@ export default {
                 width: 100,
                 tooltip: true,
                 align: "center"
-              }
+              },
+              downLoadField
             ];
             break;
           case "snsc":
@@ -214,7 +260,8 @@ export default {
                 width: 100,
                 align: "center",
                 tooltip: true
-              }
+              },
+              downLoadField
             ];
             break;
           case "ysp":
@@ -295,7 +342,8 @@ export default {
                 width: 100,
                 align: "center",
                 tooltip: true
-              }
+              },
+              downLoadField
             ];
             break;
         }
@@ -304,7 +352,6 @@ export default {
         let xmIds = this.getXmIds(this.xmAllInfo);
 
         await this.getFeatureById(xmIds);
-
       } else {
         this.$Message.warning({
           content: "请选择搜索的项目类型！",
@@ -344,8 +391,8 @@ export default {
       });
       if (result.status === 200) {
         this.isShownTableContent = true;
-        this.xmAllInfo = result.data.data;//得到的是数组
-        this.currentPage = 1
+        this.xmAllInfo = result.data.data; //得到的是数组
+        this.currentPage = 1;
       }
     },
     // 根据得到的项目IDs查找要素信息
@@ -367,17 +414,16 @@ export default {
         params: {
           drawGeometry: newGeometryWKT,
           searchType: typeObj[this.spatialSelectedType],
-          fieldType:this.spatialSelectedType
+          fieldType: this.spatialSelectedType
         }
       });
       if (result.status === 200) {
-        const {xmInfo,geojsonResult} = result.data.data;
+        const { xmInfo, geojsonResult } = result.data.data;
         this.$store.commit("featuresChange", geojsonResult[0]);
+        this.resumeBtn(); //还原表格中按钮的内容和可用性
         this.xmAllInfo = xmInfo;
         this.isShownTableContent = true;
-        this.currentPage = 1
-        
-
+        this.currentPage = 1;
       }
     },
     ////对获得的项目编号进行拼凑[2018,2019]=>"'2018','2019'"
@@ -402,8 +448,31 @@ export default {
         params: "xxx"
       });
     },
-    pageChange(e){
+    pageChange(e) {
       this.currentPage = e;
+    },
+    //点击下载后，设置下载按钮内容和可用性
+    downloadFile(index,xmbh, xmType) {
+      this.tableLoadingIndex = index;
+
+      // this.isLoading = true;
+      setTimeout(() => {
+        // this.btnEnable = false;
+        // this.isLoading = false;
+        // this.tableIndex = -1;
+        this.tableLoadingIndex = -1;
+      this.tableDisableIndex = index;
+
+        // this.btnValue = "已下载";
+      }, 2000);
+      window.open(`http://localhost:5000/files/${xmType}/${xmbh}.zip`);
+    },
+    //再次点击查询按钮，还原按钮的内容和可用性
+    resumeBtn() {
+      // this.btnEnable = true;
+      // this.btnValue = "下载";
+        this.tableLoadingIndex = -1;
+      this.tableDisableIndex = -1;
     }
   },
   watch: {
@@ -419,6 +488,34 @@ export default {
       this.isShownTable = true; //显示表格
       this.isShownTableContent = false; //显示等待
       //设置表头
+        const downLoadField = {
+          title: "操作",
+          key: "action",
+          width: 150,
+          align: "center",
+          render: (h, params) => {
+            return h(
+              "Button",
+              {
+                props: {
+                  type: "primary",
+                  size: "small",
+                  disabled: !(params.index !== this.tableDisableIndex && params.row.hasFile),//disabled和loading不能同步,所以分开定义tableLoadingIndex,tableDisabledIndex
+                  // loading: this.isLoading
+                  loading:params.index === this.tableLoadingIndex
+                },
+                on: {
+                  click: () => {
+                    let index = params.index;
+                    let { xmbh } = params.row;
+                    this.downloadFile(index,xmbh, this.spatialSelectedType);
+                  }
+                }
+              },
+              params.index === this.tableDisableIndex ? (params.index === this.tableDisableIndex?  '已下载' : 'Loading...') : '下载'
+            );
+          }
+        };
       switch (this.spatialSelectedType) {
         case "snsj":
           this.xmInfoColumns = [
@@ -459,7 +556,8 @@ export default {
               width: 100,
               tooltip: true,
               align: "center"
-            }
+            },
+            downLoadField
           ];
           break;
         case "snsc":
@@ -532,7 +630,8 @@ export default {
               width: 100,
               align: "center",
               tooltip: true
-            }
+            },
+            downLoadField
           ];
           break;
         case "ysp":
@@ -613,15 +712,14 @@ export default {
               width: 100,
               align: "center",
               tooltip: true
-            }
+            },
+            downLoadField
           ];
           break;
       }
       //根据画的geometry查询要素涉及的项目编号
       await this.getFeaturebyGeom(newGeometryWKT);
-
     }
-
   }
 };
 </script>
@@ -662,8 +760,8 @@ export default {
 .button-clear {
   margin-top: 20px;
 }
-.page{
-  margin:10px;
-  color:white;
+.page {
+  margin: 10px;
+  color: white;
 }
 </style>

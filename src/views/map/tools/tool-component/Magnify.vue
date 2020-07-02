@@ -31,8 +31,12 @@
           this.Enable=!this.Enable;
         },
         mousemoveEvent(e){
+          console.log('eee',e);
           this.mousePosition = this.map.getEventPixel(e);
-          this.map.render(this.mousePosition);
+          console.log(this.mousePosition);
+          // this.map.render(this.mousePosition);
+          this.map.render();
+
         }
       },
       watch:{
@@ -67,6 +71,7 @@
             });
             // before rendering the layer, do some clipping
             this.imageLayer.on('precompose', (event)=> {
+              console.log('layerprecompose');
               var ctx = event.context;
               var pixelRatio = event.frameState.pixelRatio;
               ctx.save();
