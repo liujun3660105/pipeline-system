@@ -33,7 +33,8 @@
             });//高德source
 
             this.googleRaterSource=new XYZ({
-              url:'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}'
+              // url:'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}'  暂时过期了，不知道后面能不能继续使用
+              url:'http://mt2.google.cn/vt/lyrs=y&hl=zh-CN&gl=CN&src=app&x={x}&y={y}&z={z}&s=G'//带标注的google影像
 
             });//google source
 

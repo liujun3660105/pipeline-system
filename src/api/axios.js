@@ -2,10 +2,9 @@ import Axios from 'axios'
 import router from '../router';
 import store from '@/store';
 //接口地址前缀
-// Axios.defaults.baseURL ='http://192.168.1.225:5000';
-
+Axios.defaults.baseURL ='http://192.168.1.225:5000';
 // Axios.defaults.baseURL ='http://192.168.1.225:5001';
-Axios.defaults.baseURL ='http://localhost:5000';
+// Axios.defaults.baseURL ='http://localhost:5000';
 //请求拦截器
 Axios.interceptors.request.use((config)=>{
   if(config.url.indexOf("geoserver")===-1 || config.url.indexOf("fme")===-1){
